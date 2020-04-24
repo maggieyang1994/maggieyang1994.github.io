@@ -5,7 +5,7 @@ node_js:
 cache: npm
 branches:
   only:
-    - master # build master branch only
+    - gh_pages # build master branch only
 script:
   - hexo generate # generate static files
 deploy:
@@ -14,5 +14,7 @@ deploy:
   github-token: $TOKEN
   keep-history: true
   on:
-    branch: master
+    branch: gh_pages
+    target_branch: master
   local-dir: public
+  
