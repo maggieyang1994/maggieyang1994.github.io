@@ -13,8 +13,8 @@ deploy:
   skip-cleanup: true
   github-token: $TOKEN
   keep-history: true
+  target_branch: master
   on:
     branch: source
-    target_branch: master
   local-dir: public
   
