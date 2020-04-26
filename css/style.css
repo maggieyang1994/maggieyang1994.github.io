@@ -308,7 +308,7 @@ body {
   font-weight: bold;
 }
 #header {
-  height: 300px;
+  height: 400px;
   position: relative;
   border-bottom: 1px solid #ddd;
 }
@@ -1371,4 +1371,11 @@ pre .javascript .function {
 .tagcloud a {
   margin-right: 5px;
   display: inline-block;
+}
+#avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  margin: auto;
 }

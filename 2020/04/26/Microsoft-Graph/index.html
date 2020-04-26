@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Microsoft Graph 简介以及使用 | Maggie&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="简介Micosoft Graph 是微软所有服务的统一api, 比如outlook, calendar, oneNote, oneDrive等等, 将微软的所有api都整合到具有单一身份验证的的单一URI命名空间中, 提供更加简单的开发体验。 Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, 而且还提供通过改变url参数来实现过滤, 排序分页等, 支持多语">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Microsoft Graph 简介以及使用">
+<meta property="og:url" content="http://fedev.me/2020/04/26/Microsoft-Graph/index.html">
+<meta property="og:site_name" content="Maggie&#39;s Blog">
+<meta property="og:description" content="简介Micosoft Graph 是微软所有服务的统一api, 比如outlook, calendar, oneNote, oneDrive等等, 将微软的所有api都整合到具有单一身份验证的的单一URI命名空间中, 提供更加简单的开发体验。 Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, 而且还提供通过改变url参数来实现过滤, 排序分页等, 支持多语">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/2.png">
+<meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/haa.png">
+<meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/4.png">
+<meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/5.png">
+<meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/auth.png">
+<meta property="article:published_time" content="2020-04-26T07:16:40.645Z">
+<meta property="article:modified_time" content="2020-04-26T07:16:40.645Z">
+<meta property="article:author" content="maggie">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fedev.me/images/MicrosoftGraph/2.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Maggie&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <img src="/css/images/avatar.jpg" itemprop="image" id="avatar">
+        <a href="/" id="logo">Maggie&#39;s Blog</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">To be a good man</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://fedev.me"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Microsoft-Graph" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/04/26/Microsoft-Graph/" class="article-date">
+  <time datetime="2020-04-26T07:16:40.645Z" itemprop="datePublished">2020-04-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/web%E5%89%8D%E7%AB%AF/">web前端</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Microsoft Graph 简介以及使用
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><a href="https://docs.microsoft.com/zh-cn/graph/auth-v2-service?view=graph-rest-1.0" target="_blank" rel="noopener">Micosoft Graph</a> 是微软所有服务的统一api, 比如outlook, calendar, oneNote, oneDrive等等, 将微软的所有api都整合到具有单一身份验证的的单一URI命名空间中, 提供更加简单的开发体验。</p>
+<p>Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, 而且还提供通过改变url参数来实现过滤, 排序分页等, 支持多语言.</p>
+<h2 id="关于鉴权"><a href="#关于鉴权" class="headerlink" title="关于鉴权"></a>关于鉴权</h2><p>所有的服务请求在调用之前都必须要取得合法的授权, Micosoft Graph将Azure AD作为服务的提供方, 基于oAuth 2.0<br>有两种方式可以获得token</p>
+<h3 id="代表用户"><a href="#代表用户" class="headerlink" title="- 代表用户"></a>- 代表用户</h3><h4 id="1-首先需要在Azure-Portal中注册一个应用"><a href="#1-首先需要在Azure-Portal中注册一个应用" class="headerlink" title="1. 首先需要在Azure Portal中注册一个应用"></a>1. 首先需要在<a href="https://portal.azure.com/" target="_blank" rel="noopener">Azure Portal</a>中注册一个应用</h4><p> 填写应用基本信息, 应用名称和类型, 这里类型选第三种(支持的账户类型最多), Redirect URL 可以先随便填写, 但是要跟代码中的url保持一致, 注册了app之后, 会自动生成一个<strong>client_id</strong><br/><br> <img src="/images/MicrosoftGraph/2.png" alt=""><br><br/><br><br/><br> <img src="/images/MicrosoftGraph/haa.png" alt=""></p>
+<p>配置应用权限, 这里我选的是email, 以及user.read 并且权限类型应该是<strong>Delegated</strong>委派<br> <img src="/images/MicrosoftGraph/4.png" alt=""></p>
+<p>配置<strong>Client_secret</strong>, 将secret保存, 因为你只能看到一次<br> <img src="/images/MicrosoftGraph/5.png" alt=""></p>
+<h4 id="2-获取授权码（authrization-code）"><a href="#2-获取授权码（authrization-code）" class="headerlink" title="2. 获取授权码（authrization_code）"></a>2. 获取授权码（authrization_code）</h4><p>打开链接<a href="https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=" target="_blank" rel="noopener">https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=</a><strong>${client_id}</strong>&amp;response_type=code&amp;redirect_uri=<a href="http://localhost:3000/auth/callback&response_mode=query&scope=offline_access%20user.read%20mail.read&state=12345" target="_blank" rel="noopener">http://localhost:3000/auth/callback&amp;response_mode=query&amp;scope=offline_access%20user.read%20mail.read&amp;state=12345</a> <br/><br><strong>client_id</strong>为你app注册成功后生成的client_id, <strong>redirect_uri</strong> 为注册app是自己填写的url<br/><br>在浏览器打开, 会跳到登陆授权页面, 通过授权之后会跳到redirect_uri, 并且在url参数后面加上<strong>authrization_code</strong>, 由于我的应用是一个脚本, 不需要跟用户有交互, 直接复制地址栏后面的authrization_code就可以了<br> <img src="/images/MicrosoftGraph/auth.png" alt=""></p>
+<h4 id="4-获取访问令牌-access-token"><a href="#4-获取访问令牌-access-token" class="headerlink" title="4. 获取访问令牌(access_token)"></a>4. 获取访问令牌(access_token)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  url: &#96;https:&#x2F;&#x2F;login.microsoftonline.com&#x2F;common&#x2F;oauth2&#x2F;v2.0&#x2F;token&#96;,</span><br><span class="line">  method: &#39;POST&#39;,</span><br><span class="line">  headers: &#123; &#39;content-type&#39;: &#39;application&#x2F;x-www-form-urlencoded&#39; &#125;,</span><br><span class="line">  data: qs.stringify(&#123;</span><br><span class="line">    code,  &#x2F;&#x2F; 上一步获得的authrization_code</span><br><span class="line">    redirect_uri: &#39;http:&#x2F;&#x2F;localhost:3000&#x2F;auth&#x2F;callback&#39;,</span><br><span class="line">    grant_type: &#96;authorization_code&#96;,</span><br><span class="line">    client_id: &#96;...&#96;,</span><br><span class="line">    scope: &#96;user.read mail.read&#96;,</span><br><span class="line">    client_secret: &#39;...&#39;,</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>返回的结果, 会得到一个access_token, 有效期是一个小时, 过期后可以通过refresh_token刷新token</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;token_type&quot;: &quot;Bearer&quot;,</span><br><span class="line">    &quot;scope&quot;: &quot;User.Read Mail.Read&quot;,</span><br><span class="line">    &quot;expires_in&quot;: 3600,</span><br><span class="line">    &quot;ext_expires_in&quot;: 3600,</span><br><span class="line">    &quot;access_token&quot;: &quot;...&quot;,</span><br><span class="line">    &quot;refresh_token&quot;: &quot;...&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="5-使用token调用Microsoft-Graph"><a href="#5-使用token调用Microsoft-Graph" class="headerlink" title="5. 使用token调用Microsoft Graph"></a>5. 使用token调用Microsoft Graph</h4><p>通过API拿到用户信息, 必须带上Authorization的请求头</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">   url: &#96;https:&#x2F;&#x2F;graph.microsoft.com&#x2F;v1.0&#x2F;users&#96;,</span><br><span class="line">   method: &#39;GET&#39;,</span><br><span class="line">   headers: &#123; &#39;Authorization&#39;: &#96;Bearer $&#123;token&#125;&#96; &#125;,</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="6-使用refresh-code-刷新access-code-以便可以持续访问"><a href="#6-使用refresh-code-刷新access-code-以便可以持续访问" class="headerlink" title="6. 使用refresh_code 刷新access_code, 以便可以持续访问"></a>6. 使用refresh_code 刷新access_code, 以便可以持续访问</h4><p>会返回一个刷新后的access_token 和 refresh_token, 如果refresh_token没有使用过, 则永远不过期<br>代表用户只需要授权一次, 通过不断refresh, 可以持续获取授权</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">    url: &#96;https:&#x2F;&#x2F;login.microsoftonline.com&#x2F;$&#123;config.tenant&#125;&#x2F;oauth2&#x2F;v2.0&#x2F;token&#96;,</span><br><span class="line">    method: &#39;POST&#39;,</span><br><span class="line">    headers: &#123; &#39;content-type&#39;: &#39;application&#x2F;x-www-form-urlencoded&#39; &#125;,</span><br><span class="line">    data: qs.stringify(&#123;</span><br><span class="line">      refresh_token,</span><br><span class="line">      redirect_uri: &#39;http:&#x2F;&#x2F;localhost:3000&#x2F;auth&#x2F;callback&#39;,</span><br><span class="line">      grant_type: &#96;refresh_token&#96;,</span><br><span class="line">      client_id: &#96;...&#96;,</span><br><span class="line">      scope: &#96;user.read mail.read&#96;,</span><br><span class="line">      client_secret: &#39;...&#39;,</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="无用户访问"><a href="#无用户访问" class="headerlink" title="- 无用户访问"></a>- 无用户访问</h3><p>无用户访问与代表用户访问流程相似, 不同点在于注册的app Request API Permission 的时候需要选择 <strong>Application permission</strong> 而不是 <strong>Delegated permission</strong>, 且申请的权限大都需要管理员同意[一般用户企业用户], 这里不展开讨论。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://fedev.me/2020/04/26/Microsoft-Graph/" data-id="ck9gpzgiu00000crzbeqj4a4p" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/04/26/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">前端安全之XSS和CSRF</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/VUE%E6%BA%90%E7%A0%81/">VUE源码</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%89%8D%E7%AB%AF/">web前端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%AE%89%E5%85%A8/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">前端工程化</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Directory</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/26/Microsoft-Graph/">Microsoft Graph 简介以及使用</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/26/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/">前端安全之XSS和CSRF</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/26/ifttt/">IFTTT 入门</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/26/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/">工程化之持续构建</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/26/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/">diff算法</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 maggie<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
