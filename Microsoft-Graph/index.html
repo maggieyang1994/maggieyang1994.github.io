@@ -10,7 +10,7 @@
   <meta name="description" content="简介Micosoft Graph 是微软所有服务的统一api, 比如outlook, calendar, oneNote, oneDrive等等, 将微软的所有api都整合到具有单一身份验证的的单一URI命名空间中, 提供更加简单的开发体验。 Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, 而且还提供通过改变url参数来实现过滤, 排序分页等, 支持多语">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Microsoft Graph 简介以及使用">
-<meta property="og:url" content="http://fedev.me/2020/04/26/Microsoft-Graph/index.html">
+<meta property="og:url" content="http://fedev.me/Microsoft-Graph/index.html">
 <meta property="og:site_name" content="Maggie&#39;s Blog">
 <meta property="og:description" content="简介Micosoft Graph 是微软所有服务的统一api, 比如outlook, calendar, oneNote, oneDrive等等, 将微软的所有api都整合到具有单一身份验证的的单一URI命名空间中, 提供更加简单的开发体验。 Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, 而且还提供通过改变url参数来实现过滤, 排序分页等, 支持多语">
 <meta property="og:locale" content="en_US">
@@ -19,13 +19,13 @@
 <meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/4.png">
 <meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/5.png">
 <meta property="og:image" content="http://fedev.me/images/MicrosoftGraph/auth.png">
-<meta property="article:published_time" content="2020-04-26T07:16:40.645Z">
-<meta property="article:modified_time" content="2020-04-26T07:16:40.645Z">
+<meta property="article:published_time" content="2020-04-26T09:21:53.843Z">
+<meta property="article:modified_time" content="2020-04-26T09:21:53.843Z">
 <meta property="article:author" content="maggie">
+<meta property="article:tag" content="outlook api">
+<meta property="article:tag" content="oAuth 2.0">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fedev.me/images/MicrosoftGraph/2.png">
-  
-    <link rel="alternate" href="/atom.xml" title="Maggie&#39;s Blog" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -66,8 +66,6 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
@@ -79,14 +77,7 @@
       <div class="outer">
         <section id="main"><article id="post-Microsoft-Graph" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2020/04/26/Microsoft-Graph/" class="article-date">
-  <time datetime="2020-04-26T07:16:40.645Z" itemprop="datePublished">2020-04-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/web%E5%89%8D%E7%AB%AF/">web前端</a>
-  </div>
-
+   
   </div>
   <div class="article-inner">
     
@@ -122,9 +113,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://fedev.me/2020/04/26/Microsoft-Graph/" data-id="ck9gpzgiu00000crzbeqj4a4p" class="article-share-link">Share</a>
+      <a data-url="http://fedev.me/Microsoft-Graph/" data-id="ck9gugk5z00004crx3tip1kkf" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oAuth-2-0/" rel="tag">oAuth 2.0</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/outlook-api/" rel="tag">outlook api</a></li></ul>
+
     </footer>
   </div>
   
@@ -132,7 +125,7 @@
 <nav id="article-nav">
   
   
-    <a href="/2020/04/26/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">前端安全之XSS和CSRF</div>
     </a>
@@ -147,6 +140,70 @@
           <aside id="sidebar">
   
     
+<div class="widget-wrap">
+  <h3 class="widget-title">Directory</h3>
+  <div class="widget">
+    <ul>
+      
+      <li>
+        web前端
+        <ul>
+          
+          <li>
+            <a href="/Microsoft-Graph/">Microsoft Graph 简介以及使用</a>
+          </li>
+          
+          <li>
+            <a href="/ifttt/">IFTTT 入门</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+      <li>
+        web安全
+        <ul>
+          
+          <li>
+            <a href="/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/">前端安全之XSS和CSRF</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+      <li>
+        前端工程化
+        <ul>
+          
+          <li>
+            <a href="/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/">工程化之持续构建</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+      <li>
+        VUE源码
+        <ul>
+          
+          <li>
+            <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/">diff算法</a>
+          </li>
+          
+          <li>
+            <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">结合源码看生命周期</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+  
+    
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
@@ -157,47 +214,10 @@
 
   
     
-
-  
-    
-  
-    
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Directory</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2020/04/26/Microsoft-Graph/">Microsoft Graph 简介以及使用</a>
-          </li>
-        
-          <li>
-            <a href="/2020/04/26/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/">前端安全之XSS和CSRF</a>
-          </li>
-        
-          <li>
-            <a href="/2020/04/26/ifttt/">IFTTT 入门</a>
-          </li>
-        
-          <li>
-            <a href="/2020/04/26/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/">工程化之持续构建</a>
-          </li>
-        
-          <li>
-            <a href="/2020/04/26/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/">diff算法</a>
-          </li>
-        
-      </ul>
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Travis/" style="font-size: 10px;">Travis</a> <a href="/tags/diff%E7%AE%97%E6%B3%95/" style="font-size: 10px;">diff算法</a> <a href="/tags/heroku/" style="font-size: 10px;">heroku</a> <a href="/tags/oAuth-2-0/" style="font-size: 10px;">oAuth 2.0</a> <a href="/tags/outlook-api/" style="font-size: 10px;">outlook api</a> <a href="/tags/vue%E6%BA%90%E7%A0%81/" style="font-size: 20px;">vue源码</a> <a href="/tags/web%E5%AE%89%E5%85%A8/" style="font-size: 10px;">web安全</a> <a href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/" style="font-size: 10px;">前端工程化</a> <a href="/tags/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%AF%91/" style="font-size: 10px;">模板编译</a> <a href="/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" style="font-size: 10px;">生命周期</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">自动构建</a> <a href="/tags/%E8%99%9A%E6%8B%9FDOM/" style="font-size: 10px;">虚拟DOM</a> <a href="/tags/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" style="font-size: 10px;">跨站脚本攻击</a> <a href="/tags/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/" style="font-size: 10px;">跨站请求伪造</a>
     </div>
   </div>
 
