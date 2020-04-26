@@ -4,6 +4,11 @@
 title: 前端安全之XSS和CSRF
 categories: 
 - web安全
+rank: 5
+tags: 
+  - web安全
+  - 跨站脚本攻击
+  - 跨站请求伪造
 ---
 
 ### xss攻击（跨站脚本攻击cross-site script）

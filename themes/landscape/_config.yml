@@ -2,7 +2,7 @@
 menu:
   Home: /
   Archives: /archives
-rss: /atom.xml
+# rss: /atom.xml
 
 #avator
 Avatar-url: images/avatar.jpg
@@ -13,11 +13,12 @@ fancybox: true
 # Sidebar
 sidebar: right
 widgets:
-- category
-- tag
-- tagcloud
-- archive
 - recent_posts
+- category
+# - tag
+- tagcloud
+#- archive
+
 
 # display widgets at the bottom of index pages (pagination == 2)
 index_widgets:

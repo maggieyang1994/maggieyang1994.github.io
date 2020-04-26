@@ -3,6 +3,7 @@
 title: IFTTT 入门
 categories: 
 - web前端
+rank: 6
 ---
 ### 背景
 

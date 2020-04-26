@@ -2,6 +2,11 @@
 title: 结合源码看生命周期
 categories:
   - VUE源码
+rank: 2
+tags: 
+  - vue源码
+  - 生命周期
+  - 模板编译
 ---
 
 ![](https://cn.vuejs.org/images/lifecycle.png)
