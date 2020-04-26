@@ -4,6 +4,8 @@ menu:
   Archives: /archives
 rss: /atom.xml
 
+#avator
+Avatar-url: images/avatar.jpg
 # Content
 excerpt_link: Read More
 fancybox: true
