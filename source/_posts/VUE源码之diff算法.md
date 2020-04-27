@@ -1,6 +1,7 @@
 
 ---
 title: diff算法
+date: 2020-03-17
 categories: 
   - VUE源码
 rank: 1
@@ -8,6 +9,7 @@ tags:
   - vue源码
   - 虚拟DOM
   - diff算法
+
 ---
 ### 流程图
 ![](/images/VUE_DIFF/流程图.png)

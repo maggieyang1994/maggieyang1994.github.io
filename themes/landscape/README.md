@@ -31,7 +31,7 @@ git pull
 # Header
 menu:
   Home: /
-  Archives: /archives
+  About: /about
 rss: /atom.xml
 
 # Content

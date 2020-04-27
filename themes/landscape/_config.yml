@@ -1,8 +1,10 @@
 # Header
 menu:
   Home: /
-  Archives: /archives
+  About: /about
+  # Archives: /archives
 # rss: /atom.xml
+github: https://github.com/maggieyang1994
 
 #avator
 Avatar-url: images/avatar.jpg
@@ -14,7 +16,7 @@ fancybox: true
 sidebar: right
 widgets:
 - recent_posts
-- category
+# - category
 # - tag
 - tagcloud
 #- archive
