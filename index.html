@@ -5,12 +5,12 @@
   
 
   
-  <title>Maggie&#39;s Blog</title>
+  <title>Hello maggie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
-<meta property="og:title" content="Maggie&#39;s Blog">
+<meta property="og:title" content="Hello maggie">
 <meta property="og:url" content="http://fedev.me/index.html">
-<meta property="og:site_name" content="Maggie&#39;s Blog">
+<meta property="og:site_name" content="Hello maggie">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="maggie">
 <meta name="twitter:card" content="summary">
@@ -35,7 +35,7 @@
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
         <img src="/css/images/avatar.jpg" itemprop="image" id="avatar">
-        <a href="/" id="logo">Maggie&#39;s Blog</a>
+        <a href="/" id="logo">Hello maggie</a>
       </h1>
       
         <h2 id="subtitle-wrap">
@@ -49,7 +49,7 @@
         
           <a class="main-nav-link" href="/">Home</a>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+          <a class="main-nav-link" href="/about">About</a>
         
       </nav>
       <nav id="sub-nav">
@@ -65,398 +65,141 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-VUE源码之diff算法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-   
-  </div>
-  <div class="article-inner">
+  
     
     
-      <header class="article-header">
-        
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2020" class="archive-year">2020</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="archive-article-date">
+  <time datetime="2020-03-19T00:00:00.000Z" itemprop="datePublished">Mar 19</time>
+</a>
+      
   
     <h1 itemprop="name">
-      <a class="article-title" href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/">diff算法</a>
+      <a class="archive-article-title" href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">结合源码看生命周期</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><p><img src="/images/VUE_DIFF/%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt=""><br><strong>触发diff算法的过程</strong>: 派发更新<code>dep.notify</code>(observer/index.js) –&gt; <code>wather.update</code> 将回调加入<code>queueWathcher</code>等待队列(obserber/wather.js) –&gt; 去除重复之后等到下一个事件循环执行回调(observer/scheduler.js) —&gt; 执行<code>vm.__patch__(prevVnode, vnode)</code>(instance/lifecycle.js), 下面来看patch.js</p>
-<h4 id="patch源码（代码简化版本）"><a href="#patch源码（代码简化版本）" class="headerlink" title="patch源码（代码简化版本）"></a>patch源码（代码简化版本）</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">patch</span> (<span class="params">oldVnode, vnode, hydrating, removeOnly</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//如果vnode不存在但是oldVnode存在，说明意图是要销毁老节点，那么就调用invokeDestroyHook(oldVnode)来进行销毁</span></span><br><span class="line">    <span class="keyword">if</span> (isUndef(vnode)) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isDef(oldVnode)) invokeDestroyHook(oldVnode)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> isInitialPatch = <span class="literal">false</span></span><br><span class="line">    <span class="keyword">const</span> insertedVnodeQueue = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isUndef(oldVnode)) &#123;</span><br><span class="line">      <span class="comment">// 如果oldVnode不存在但是vnode存在，说明意图是要创建新节点，那么就调用createElm来创建新节点</span></span><br><span class="line">      isInitialPatch = <span class="literal">true</span></span><br><span class="line">      createElm(vnode, insertedVnodeQueue)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">const</span> isRealElement = isDef(oldVnode.nodeType)</span><br><span class="line">      <span class="keyword">if</span> (!isRealElement &amp;&amp; sameVnode(oldVnode, vnode)) &#123;</span><br><span class="line">        <span class="comment">// 如果oldVnode和vnode是同一个节点，就调用patchVnode来进行patch</span></span><br><span class="line">        patchVnode(oldVnode, vnode, insertedVnodeQueue, <span class="literal">null</span>, <span class="literal">null</span>, removeOnly)</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 只会在同层级比较 如果父节点的标签或者key不同 后面子节点就没有再比较的必要了</span></span><br><span class="line">        <span class="comment">// 如果oldVnode和vnode不是samenode的话 </span></span><br><span class="line">        <span class="comment">// 大概过程就是创建一个新节点 -&gt; 以oldVnode.elm为参照点插入到老节点的后面 --&gt;删除oldVnode</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    invokeInsertHook(vnode, insertedVnodeQueue, isInitialPatch)</span><br><span class="line">    <span class="keyword">return</span> vnode.elm</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h5 id="其中sameVnode源码"><a href="#其中sameVnode源码" class="headerlink" title="其中sameVnode源码"></a>其中sameVnode源码</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sameVnode</span> (<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    a.key === b.key &amp;&amp; (  <span class="comment">// 先比较key值</span></span><br><span class="line">      (</span><br><span class="line">        a.tag === b.tag &amp;&amp;  <span class="comment">// 标签名</span></span><br><span class="line">        a.isComment === b.isComment &amp;&amp; <span class="comment">// 是否是注释</span></span><br><span class="line">        isDef(a.data) === isDef(b.data) &amp;&amp;  <span class="comment">// 是否都有data</span></span><br><span class="line">        sameInputType(a, b)             <span class="comment">// 如果是input标签 type是否一样</span></span><br><span class="line">      ) || (</span><br><span class="line">        isTrue(a.isAsyncPlaceholder) &amp;&amp;</span><br><span class="line">        a.asyncFactory === b.asyncFactory &amp;&amp;</span><br><span class="line">        isUndef(b.asyncFactory.error)</span><br><span class="line">      )</span><br><span class="line">    )</span><br><span class="line">  )</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="patchVnode-源码"><a href="#patchVnode-源码" class="headerlink" title="patchVnode 源码"></a>patchVnode 源码</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">patchVnode</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    oldVnode,</span></span></span><br><span class="line"><span class="function"><span class="params">    vnode,</span></span></span><br><span class="line"><span class="function"><span class="params">    insertedVnodeQueue,</span></span></span><br><span class="line"><span class="function"><span class="params">    ownerArray,</span></span></span><br><span class="line"><span class="function"><span class="params">    index,</span></span></span><br><span class="line"><span class="function"><span class="params">    removeOnly</span></span></span><br><span class="line"><span class="function"><span class="params">  </span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (oldVnode === vnode) &#123;</span><br><span class="line">      <span class="comment">// 如果 相等 直接返回</span></span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// oldVnode.elm 和 vnode.elm指向同一块内存空间 两者的改动都能响应到elm上</span></span><br><span class="line">    <span class="keyword">const</span> elm = vnode.elm = oldVnode.elm</span><br><span class="line">    <span class="keyword">let</span> i</span><br><span class="line">    <span class="keyword">const</span> data = vnode.data</span><br><span class="line">    <span class="keyword">if</span> (isDef(data) &amp;&amp; isDef(i = data.hook) &amp;&amp; isDef(i = i.prepatch)) &#123;</span><br><span class="line">      i(oldVnode, vnode)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 取出两个节点的子节点</span></span><br><span class="line">    <span class="keyword">const</span> oldCh = oldVnode.children</span><br><span class="line">    <span class="keyword">const</span> ch = vnode.children</span><br><span class="line">    <span class="keyword">if</span> (isDef(data) &amp;&amp; isPatchable(vnode)) &#123;</span><br><span class="line">      <span class="comment">// 执行update钩子函数</span></span><br><span class="line">      <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)</span><br><span class="line">      <span class="keyword">if</span> (isDef(i = data.hook) &amp;&amp; isDef(i = i.update)) i(oldVnode, vnode)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (isUndef(vnode.text))&#123;</span><br><span class="line">      <span class="keyword">if</span> (isDef(oldCh) &amp;&amp; isDef(ch)) &#123;</span><br><span class="line">        <span class="comment">// 如果都有子节点 则执行diff的核心updateChildren</span></span><br><span class="line">        <span class="keyword">if</span> (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(ch)) &#123;</span><br><span class="line">        <span class="comment">// 如果vnode有子节点 但是oldVnode没有 则为创建子节点</span></span><br><span class="line">        <span class="keyword">if</span> (isDef(oldVnode.text)) nodeOps.setTextContent(elm, <span class="string">''</span>)</span><br><span class="line">        addVnodes(elm, <span class="literal">null</span>, ch, <span class="number">0</span>, ch.length - <span class="number">1</span>, insertedVnodeQueue)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldCh)) &#123;</span><br><span class="line">        <span class="comment">// 如果vnode没有子节点 但是oldVnode有 则为删除子节点</span></span><br><span class="line">        removeVnodes(oldCh, <span class="number">0</span>, oldCh.length - <span class="number">1</span>)</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isDef(oldVnode.text)) &#123;</span><br><span class="line">        <span class="comment">// 如果都没有子节点 且oldVnode是文本节点 直接将文本置空</span></span><br><span class="line">        nodeOps.setTextContent(elm, <span class="string">''</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (oldVnode.text !== vnode.text) &#123;</span><br><span class="line">      <span class="comment">// 如果两个都是文本节点  直接替换文本</span></span><br><span class="line">      <span class="comment">// 一般是递归到最底层的时候进入到这个判断</span></span><br><span class="line">      nodeOps.setTextContent(elm, vnode.text)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="接下来看diff算法的核心updateChildren"><a href="#接下来看diff算法的核心updateChildren" class="headerlink" title="接下来看diff算法的核心updateChildren"></a>接下来看diff算法的核心updateChildren</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateChildren</span> (<span class="params">parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly</span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 取四个指针 分别指向oldCh 和 newCh的头和尾</span></span><br><span class="line">    <span class="comment">// 并取四个指针指向的值</span></span><br><span class="line">    <span class="keyword">let</span> oldStartIdx = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> newStartIdx = <span class="number">0</span></span><br><span class="line">    <span class="keyword">let</span> oldEndIdx = oldCh.length - <span class="number">1</span></span><br><span class="line">    <span class="keyword">let</span> oldStartVnode = oldCh[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">let</span> oldEndVnode = oldCh[oldEndIdx]</span><br><span class="line">    <span class="keyword">let</span> newEndIdx = newCh.length - <span class="number">1</span></span><br><span class="line">    <span class="keyword">let</span> newStartVnode = newCh[<span class="number">0</span>]</span><br><span class="line">    <span class="keyword">let</span> newEndVnode = newCh[newEndIdx]</span><br><span class="line">    <span class="keyword">let</span> oldKeyToIdx, idxInOld, vnodeToMove, refElm</span><br><span class="line"></span><br><span class="line">    <span class="comment">// removeOnly一般都是false</span></span><br><span class="line">    <span class="comment">// 只有在&lt;transition-group&gt;组件的时候才是true 因为transition必须要通过删除重建才会使过渡效果正常</span></span><br><span class="line">    <span class="keyword">const</span> canMove = !removeOnly</span><br><span class="line">    <span class="comment">// 递归的去patch子节点</span></span><br><span class="line">    <span class="keyword">while</span> (oldStartIdx &lt;= oldEndIdx &amp;&amp; newStartIdx &lt;= newEndIdx) &#123;</span><br><span class="line">      <span class="keyword">if</span> (isUndef(oldStartVnode)) &#123;</span><br><span class="line">        oldStartVnode = oldCh[++oldStartIdx] <span class="comment">// Vnode has been moved left</span></span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isUndef(oldEndVnode)) &#123;</span><br><span class="line">        oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newStartVnode)) &#123;</span><br><span class="line">        <span class="comment">// 当oldStartVnode == newStartVnode的时候 代表oldStartVnode位置没有变 直接复用oldStartVnode</span></span><br><span class="line">        <span class="comment">// 同时oldStartIdx后移  newStartIdx后移</span></span><br><span class="line">        patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)</span><br><span class="line">        oldStartVnode = oldCh[++oldStartIdx]</span><br><span class="line">        newStartVnode = newCh[++newStartIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newEndVnode)) &#123;</span><br><span class="line">        <span class="comment">// oldEndVnode == newEndVnode 代表oldEndVnode位置没有变 直接复用oldEndVnode</span></span><br><span class="line">        <span class="comment">// 同时oldEndIdx前移 newEndIdx前移</span></span><br><span class="line">        patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)</span><br><span class="line">        oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">        newEndVnode = newCh[--newEndIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldStartVnode, newEndVnode)) &#123; </span><br><span class="line">        <span class="comment">// oldStartVnode == newEndVnode 代表oldStartIdx指向的node 与newEndVnode指向的node是同一节点</span></span><br><span class="line">        <span class="comment">// 则将oldStartIdx指向的node移动到 oldEndVnode的后面</span></span><br><span class="line">        <span class="comment">// 同时oldStartIdx后移  newEndIdx前移</span></span><br><span class="line">        patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)</span><br><span class="line">        canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))</span><br><span class="line">        oldStartVnode = oldCh[++oldStartIdx]</span><br><span class="line">        newEndVnode = newCh[--newEndIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (sameVnode(oldEndVnode, newStartVnode)) &#123; </span><br><span class="line">        <span class="comment">// oldEndVnode == newStartVnode 代表oldEndVnode指向的node 与newStartVnode指向的node是同一节点</span></span><br><span class="line">        <span class="comment">// 则将oldEndIdx指向的node移动到 oldStartVnode的前面</span></span><br><span class="line">        <span class="comment">// 同时newStartIdx后移  oldEndIdx前移</span></span><br><span class="line">        patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)</span><br><span class="line">        canMove &amp;&amp; nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)</span><br><span class="line">        oldEndVnode = oldCh[--oldEndIdx]</span><br><span class="line">        newStartVnode = newCh[++newStartIdx]</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 如果四种情况都不符合  oldKeyToIdx 是指old key to Idx的映射 </span></span><br><span class="line">        <span class="keyword">if</span> (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">        <span class="comment">// 看看oldVnode中是否有 key===newStartVnode.key</span></span><br><span class="line">        idxInOld = isDef(newStartVnode.key)</span><br><span class="line">          ? oldKeyToIdx[newStartVnode.key]</span><br><span class="line">          : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">          <span class="comment">// 如果没有  则是新element 直接创建</span></span><br><span class="line">        <span class="keyword">if</span> (isUndef(idxInOld)) &#123; <span class="comment">// New element</span></span><br><span class="line">          createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, <span class="literal">false</span>, newCh, newStartIdx)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// 否则 如果oldVnode中有key 与  newStartVnode key相等的话</span></span><br><span class="line">          vnodeToMove = oldCh[idxInOld]</span><br><span class="line">          <span class="keyword">if</span> (sameVnode(vnodeToMove, newStartVnode)) &#123;</span><br><span class="line">            <span class="comment">// 并且sameVnode 就直接将vnodeToMove移动到oldStartVnode的前面 不会新建一个</span></span><br><span class="line">            patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)</span><br><span class="line">            oldCh[idxInOld] = <span class="literal">undefined</span></span><br><span class="line">            canMove &amp;&amp; nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 如果相同的key 但是标签不一样  也会新建</span></span><br><span class="line">            createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, <span class="literal">false</span>, newCh, newStartIdx)</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        newStartVnode = newCh[++newStartIdx]</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 这个过程中oldStartIdx， newStartIdx会不停后移  oldEndIdx，newEndIdx不断前移</span></span><br><span class="line">    <span class="comment">// 如果oldStartIdx &gt; oldEndIdx代表old先走完 而new还没走完 则按照下标addVnodes</span></span><br><span class="line">    <span class="keyword">if</span> (oldStartIdx &gt; oldEndIdx) &#123;</span><br><span class="line">      refElm = isUndef(newCh[newEndIdx + <span class="number">1</span>]) ? <span class="literal">null</span> : newCh[newEndIdx + <span class="number">1</span>].elm</span><br><span class="line">      addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (newStartIdx &gt; newEndIdx) &#123;</span><br><span class="line">      <span class="comment">// 如果newStartIdx &gt; newEndIdx代表new先走完 而old还没走完 则removeVnodes</span></span><br><span class="line">      removeVnodes(oldCh, oldStartIdx, oldEndIdx)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h5 id="图解diff过程"><a href="#图解diff过程" class="headerlink" title="图解diff过程"></a>图解diff过程</h5><p><img src="/images/VUE_DIFF/diff.png" alt=""></p>
-<ol>
-<li><p>第一步</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">oldStartVnode === newStartVnode <span class="comment">// oldStartVnode保持不变</span></span><br><span class="line">oldStartIdx += <span class="number">1</span>;</span><br><span class="line">newStartIdx += <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
-<li><p>第二步</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">oldStartVnode === newEndVnode <span class="comment">// 将oldStartVnode移动到oldEndVnode后面 此时realDom 是 a d b</span></span><br><span class="line">oldStartIdx += <span class="number">1</span>;</span><br><span class="line">newEndIdx -= <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
-<li><p>第三步</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">oldEndVnode === newEndVnode <span class="comment">// oldEndVnode位置不变 此时realDom 还是 a d b</span></span><br><span class="line">oldEndIdx -= <span class="number">1</span>;</span><br><span class="line">newEndIdx -= <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
-<li><p>第四步</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 此时oldEndIdx 已经 &lt; oldStartIdx了  old已经走完</span></span><br><span class="line"><span class="comment">// 将c按照下标插入到dom上     此时realDom 是a c d b</span></span><br></pre></td></tr></table></figure>
-<h4 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h4><h5 id="关于vue在列表渲染中为什么要添加一个独一无二的key？"><a href="#关于vue在列表渲染中为什么要添加一个独一无二的key？" class="headerlink" title="关于vue在列表渲染中为什么要添加一个独一无二的key？"></a>关于vue在列表渲染中为什么要添加一个独一无二的key？</h5><p>如果列表渲染的时候没有key 那么<code>undefined === undefined</code>, 直接进入到<code>sameVnode(oldStartVnode, newStartVnode) === true</code> 的判断<br>会使用就地更新策略而不是移动dom元素, 如果只是简单的列表展示的话, 直接替换文本, 不用创建标签。这种模式更加高效，但只适用于不依赖子组件状态或临时 DOM 状态 (例如：表单输入值) 的列表渲染输出。<a href="https://jsbin.com/numiwog/edit?html,output" target="_blank" rel="noopener">例子</a><br>如果是列表123 变成了13, 如果是就地更新 的话 会把2 update to 3, 再delete 3, 如果不是就地更新就不用移动13的位置, 直接删除2</p>
-<h5 id="以及key在diff算法中的作用"><a href="#以及key在diff算法中的作用" class="headerlink" title="以及key在diff算法中的作用"></a>以及key在diff算法中的作用</h5><p>key在diff算法中的作用就是避免就地复用策略带来的副作用,key是判断两个节点是否为sameNode的重要凭证</p>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://fedev.me/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/" data-id="ck9gugk7c000w4crxd3vhfpp6" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/diff%E7%AE%97%E6%B3%95/" rel="tag">diff算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue%E6%BA%90%E7%A0%81/" rel="tag">vue源码</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%99%9A%E6%8B%9FDOM/" rel="tag">虚拟DOM</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
 </article>
-
-
   
-    <article id="post-VUE源码之生命周期" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-   
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
-        
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/" class="archive-article-date">
+  <time datetime="2020-03-17T00:00:00.000Z" itemprop="datePublished">Mar 17</time>
+</a>
+      
   
     <h1 itemprop="name">
-      <a class="article-title" href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">结合源码看生命周期</a>
+      <a class="archive-article-title" href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/">diff算法</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><img src="https://cn.vuejs.org/images/lifecycle.png" alt=""></p>
-<h4 id="beforeCreate"><a href="#beforeCreate" class="headerlink" title="beforeCreate"></a>beforeCreate</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// instance/init.js</span></span><br><span class="line">initLifecycle(vm);</span><br><span class="line">initEvents(vm);</span><br><span class="line">initRender(vm);</span><br><span class="line">callHook(vm, <span class="string">"beforeCreate"</span>);</span><br><span class="line">initInjections(vm); <span class="comment">// resolve injections before data/props</span></span><br><span class="line">initState(vm);</span><br><span class="line">initProvide(vm); <span class="comment">// resolve provide after data/props</span></span><br><span class="line">callHook(vm, <span class="string">"created"</span>);</span><br><span class="line"><span class="keyword">if</span> (vm.$options.el) &#123;</span><br><span class="line">  vm.$mount(vm.$options.el);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 initLifecycle,event,render 之后， initState 之前， 所以这里只能拿到$attrs, $listeners, 无法拿到 data， methods 等等</p>
-<h4 id="created"><a href="#created" class="headerlink" title="created"></a>created</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// instance/state.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">initState</span>(<span class="params">vm: Component</span>) </span>&#123;</span><br><span class="line">  vm._watchers = [];</span><br><span class="line">  <span class="keyword">const</span> opts = vm.$options;</span><br><span class="line">  <span class="keyword">if</span> (opts.props) initProps(vm, opts.props); <span class="comment">// 初始化prop</span></span><br><span class="line">  <span class="keyword">if</span> (opts.methods) initMethods(vm, opts.methods); <span class="comment">// // 初始化method</span></span><br><span class="line">  <span class="keyword">if</span> (opts.data) &#123;</span><br><span class="line">    initData(vm); <span class="comment">// 初始化data, 并调用observe(data, true /* asRootData */);</span></span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    observe((vm._data = &#123;&#125;), <span class="literal">true</span> <span class="comment">/* asRootData */</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (opts.computed) initComputed(vm, opts.computed); <span class="comment">// 初始化computed</span></span><br><span class="line">  <span class="keyword">if</span> (opts.watch &amp;&amp; opts.watch !== nativeWatch) &#123;</span><br><span class="line">    initWatch(vm, opts.watch); <span class="comment">// 初始化watch</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 initstate 之后，这里可以拿到 data, methods 等, 所以页面初始化请求数据的动作一般放在created</p>
-<h4 id="beforeMount"><a href="#beforeMount" class="headerlink" title="beforeMount"></a>beforeMount</h4><p><a href="https://juejin.im/post/5ccafd4d51882540d472a90e" target="_blank" rel="noopener">链接</a><br>vue 基于源码构建 会有两个版本 一个是运行时 和 运行时加编译器，挂载的时候有两条分支<br>如果没有指定 render 函数 则需要编译器将 template 模板编译成 render 函数(这里模板编译不做详细介绍)<br>如果指定了 render 函数 则不需要编译器</p>
-<p>其中没有指定 render 函数分为指定了 template 和没有 template 两种<br>如果没有 template 则直接用 el.outerHTML 作为模板编译<br>而指定 template, template 又有三种写法</p>
-<ol>
-<li>字符串模板</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">"#app"</span>,</span><br><span class="line">  template: <span class="string">"&lt;div&gt;模板字符串&lt;/div&gt;"</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>选择符匹配元素的 innerHTML 模板</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">"app"</span>&gt;</span><br><span class="line">  &lt;script type=<span class="string">"x-template"</span> id=<span class="string">"test"</span>&gt;</span><br><span class="line">    &lt;p&gt;test&lt;<span class="regexp">/p&gt;</span></span><br><span class="line"><span class="regexp">  &lt;/</span>script&gt;</span><br><span class="line">&lt;<span class="regexp">/div&gt;;</span></span><br><span class="line"><span class="regexp">var vm = new Vue(&#123;</span></span><br><span class="line"><span class="regexp">  el: "#app",</span></span><br><span class="line"><span class="regexp">  template: "#test",</span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>dom 元素匹配的 innerHTML 模板</li>
-</ol>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id=<span class="string">"app"</span>&gt;</span><br><span class="line">  &lt;span id=<span class="string">"test"</span>&gt;test2&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">&lt;/</span>div&gt;;</span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">  el: <span class="string">"#app"</span>,</span><br><span class="line">  template: <span class="built_in">document</span>.querySelector(<span class="string">"#test"</span>),</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>源码分别对这三种写法做了判断</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// platforms/web/entry-runtime-with-compiler.js</span></span><br><span class="line">Vue.prototype.$mount = <span class="function"><span class="keyword">function</span> (<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  el?: string | Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  el = el &amp;&amp; query(el);</span><br><span class="line">  <span class="keyword">const</span> options = <span class="keyword">this</span>.$options;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!options.render) &#123;</span><br><span class="line">    <span class="keyword">let</span> template = options.template;</span><br><span class="line">    <span class="keyword">if</span> (template) &#123;</span><br><span class="line">      <span class="comment">// 是否指定了template选项</span></span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">typeof</span> template === <span class="string">"string"</span>) &#123;</span><br><span class="line">        <span class="comment">//字符串模板 的template写法</span></span><br><span class="line">        <span class="keyword">if</span> (template.charAt(<span class="number">0</span>) === <span class="string">"#"</span>) &#123;</span><br><span class="line">          template = idToTemplate(template);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (template.nodeType) &#123;</span><br><span class="line">        <span class="comment">// dom 元素匹配的 innerHTML 模板</span></span><br><span class="line">        template = template.innerHTML;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (el) &#123;</span><br><span class="line">      <span class="comment">// 将el外部的html作为template编译</span></span><br><span class="line">      template = getOuterHTML(el);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (template) &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; render, staticRenderFns &#125; = compileToFunctions(</span><br><span class="line">        template,</span><br><span class="line">        &#123;</span><br><span class="line">          outputSourceRange: process.env.NODE_ENV !== <span class="string">"production"</span>,</span><br><span class="line">          shouldDecodeNewlines,</span><br><span class="line">          shouldDecodeNewlinesForHref,</span><br><span class="line">          delimiters: options.delimiters,</span><br><span class="line">          comments: options.comments,</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="keyword">this</span></span><br><span class="line">      );</span><br><span class="line">      options.render = render;</span><br><span class="line">      options.staticRenderFns = staticRenderFns;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> mount.call(<span class="keyword">this</span>, el, hydrating);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>无论以什么样的方式挂载, 都会执行 mountComponent 函数<br>mountComponent 函数(简化版)</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// instance/lifecycle.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">mountComponent</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">  vm: Component,</span></span></span><br><span class="line"><span class="function"><span class="params">  el: ?Element,</span></span></span><br><span class="line"><span class="function"><span class="params">  hydrating?: boolean</span></span></span><br><span class="line"><span class="function"><span class="params"></span>): <span class="title">Component</span> </span>&#123;</span><br><span class="line">  vm.$el = el;</span><br><span class="line">  callHook(vm, <span class="string">"beforeMount"</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">let</span> updateComponent;</span><br><span class="line">  updateComponent = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// vm._render()生成一个虚拟dom</span></span><br><span class="line">    vm._update(vm._render(), hydrating);</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">new</span> Watcher(</span><br><span class="line">    vm,</span><br><span class="line">    updateComponent,</span><br><span class="line">    noop,</span><br><span class="line">    &#123;</span><br><span class="line">      before() &#123;</span><br><span class="line">        <span class="keyword">if</span> (vm._isMounted &amp;&amp; !vm._isDestroyed) &#123;</span><br><span class="line">          callHook(vm, <span class="string">"beforeUpdate"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="literal">true</span> <span class="comment">/* isRenderWatcher */</span></span><br><span class="line">  );</span><br><span class="line">  hydrating = <span class="literal">false</span>;</span><br><span class="line">  <span class="keyword">if</span> (vm.$vnode == <span class="literal">null</span>) &#123;</span><br><span class="line">    vm._isMounted = <span class="literal">true</span>;</span><br><span class="line">    callHook(vm, <span class="string">"mounted"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> vm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在 callHook(vm, ‘beforeMount’) 之前 执行了 vm.$el = el, 所以在beforeMount之前是拿不到vm.$el 的</p>
-<h4 id="mounted"><a href="#mounted" class="headerlink" title="mounted"></a>mounted</h4><p>new Watcher 的时候触发 watcher 的 getter,　也就是 updateComponent 函数, 进而触发 vm._update(vm._render(), hydrating)</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// instance/lifecycle.js</span></span><br><span class="line">Vue.prototype._update = <span class="function"><span class="keyword">function</span> (<span class="params">vnode: VNode, hydrating?: boolean</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> vm: Component = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">const</span> prevEl = vm.$el;</span><br><span class="line">  <span class="keyword">const</span> prevVnode = vm._vnode;</span><br><span class="line">  <span class="keyword">const</span> restoreActiveInstance = setActiveInstance(vm);</span><br><span class="line">  vm._vnode = vnode;</span><br><span class="line">  <span class="keyword">if</span> (!prevVnode) &#123;</span><br><span class="line">    <span class="comment">// initial render</span></span><br><span class="line">    <span class="comment">// if !prevNode 新创建实例  传入 挂载的真实dom节点 vm.$el 和vnode(新生成的虚拟dom)</span></span><br><span class="line">    <span class="comment">// 最后转化成真实dom节点</span></span><br><span class="line">    vm.$el = vm.__patch__(vm.$el, vnode, hydrating, <span class="literal">false</span> <span class="comment">/* removeOnly */</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// updates</span></span><br><span class="line">    <span class="comment">// else update 传入新旧的虚拟dom</span></span><br><span class="line">    vm.$el = vm.__patch__(prevVnode, vnode);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>调用 patch 函数 传入挂载的真实 dom 节点和新生成的虚拟 dom, <strong>数据才会真正的显示到页面上</strong></p>
-<h4 id="beforeUpdate"><a href="#beforeUpdate" class="headerlink" title="beforeUpdate"></a>beforeUpdate</h4><p>当数据发生改变的时候, 触发<code>dep.notify()</code>–&gt;<code>watcher.update</code><br>数据并不会马上更新页面上, 首先会加入到 queueWather 等待队列中去</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// observer/watcher.js</span></span><br><span class="line">update () &#123;</span><br><span class="line">    <span class="comment">/* istanbul ignore else */</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.lazy) &#123;</span><br><span class="line">      <span class="keyword">this</span>.dirty = <span class="literal">true</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.sync) &#123;</span><br><span class="line">      <span class="keyword">this</span>.run()</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      queueWatcher(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于在一次事件循环中改变多次的数据, updateComponent 回调只会 push 到队列中一次<br>等到下一次事件循环的时候再更新到页面上去</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// observer/scheduler.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">queueWatcher</span>(<span class="params">watcher: Watcher</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> id = watcher.id;</span><br><span class="line">  <span class="comment">// 首先用 has 对象保证同一个 Watcher 只添加一次</span></span><br><span class="line">  <span class="comment">// 一个watcher在同一个事件循环中的多次改动  只push一次</span></span><br><span class="line">  <span class="keyword">if</span> (has[id] == <span class="literal">null</span>) &#123;</span><br><span class="line">    has[id] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (!flushing) &#123;</span><br><span class="line">      queue.push(watcher);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">let</span> i = queue.length - <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">while</span> (i &gt; index &amp;&amp; queue[i].id &gt; watcher.id) &#123;</span><br><span class="line">        i--;</span><br><span class="line">      &#125;</span><br><span class="line">      queue.splice(i + <span class="number">1</span>, <span class="number">0</span>, watcher);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// queue the flush</span></span><br><span class="line">    <span class="keyword">if</span> (!waiting) &#123;</span><br><span class="line">      waiting = <span class="literal">true</span>;</span><br><span class="line">      nextTick(flushSchedulerQueue);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">flushSchedulerQueue</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  currentFlushTimestamp = getNow();</span><br><span class="line">  flushing = <span class="literal">true</span>;</span><br><span class="line">  <span class="keyword">let</span> watcher, id;</span><br><span class="line">  <span class="comment">// 对队列进行排序 确保父组件在子组件之前更新</span></span><br><span class="line">  queue.sort(<span class="function">(<span class="params">a, b</span>) =&gt;</span> a.id - b.id);</span><br><span class="line">  <span class="keyword">for</span> (index = <span class="number">0</span>; index &lt; queue.length; index++) &#123;</span><br><span class="line">    watcher = queue[index];</span><br><span class="line">    <span class="keyword">if</span> (watcher.before) &#123;</span><br><span class="line">      <span class="comment">// 执行beforeUpdate生命周期函数</span></span><br><span class="line">      watcher.before();</span><br><span class="line">    &#125;</span><br><span class="line">    id = watcher.id;</span><br><span class="line">    has[id] = <span class="literal">null</span>;</span><br><span class="line">    <span class="comment">// 调用updateComponent函数</span></span><br><span class="line">    watcher.run();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// call component updated and activated hooks</span></span><br><span class="line">  callActivatedHooks(activatedQueue);</span><br><span class="line">  <span class="comment">// 执行beforeUpdate生命周期函数</span></span><br><span class="line">  callUpdatedHooks(updatedQueue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="updated"><a href="#updated" class="headerlink" title="updated"></a>updated</h4><p>最终执行<code>vm.$el = vm.__patch__(prevVnode, vnode);</code>将改动更新到页面上去, 详情见隔壁 源码之diff算法</p>
-<h4 id="beforeDestroy"><a href="#beforeDestroy" class="headerlink" title="beforeDestroy"></a>beforeDestroy</h4><p>beforeDestroy钩子函数在实例销毁之前调用。在这一步，实例仍然完全可用。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// instance/lifecycle.js</span></span><br><span class="line">Vue.prototype.$destroy = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> vm: Component = <span class="keyword">this</span></span><br><span class="line">    callHook(vm, <span class="string">'beforeDestroy'</span>)</span><br><span class="line">    vm._isBeingDestroyed = <span class="literal">true</span></span><br><span class="line">    <span class="comment">// remove self from parent</span></span><br><span class="line">    <span class="keyword">const</span> parent = vm.$parent</span><br><span class="line">    <span class="keyword">if</span> (parent &amp;&amp; !parent._isBeingDestroyed &amp;&amp; !vm.$options.abstract) &#123;</span><br><span class="line">      remove(parent.$children, vm)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// teardown watchers</span></span><br><span class="line">    <span class="keyword">if</span> (vm._watcher) &#123;</span><br><span class="line">      vm._watcher.teardown()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> i = vm._watchers.length</span><br><span class="line">    <span class="keyword">while</span> (i--) &#123;</span><br><span class="line">      vm._watchers[i].teardown()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// remove reference from data ob</span></span><br><span class="line">    <span class="comment">// frozen object may not have observer.</span></span><br><span class="line">    <span class="keyword">if</span> (vm._data.__ob__) &#123;</span><br><span class="line">      vm._data.__ob__.vmCount--</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// call the last hook...</span></span><br><span class="line">    vm._isDestroyed = <span class="literal">true</span></span><br><span class="line">    <span class="comment">// invoke destroy hooks on current rendered tree</span></span><br><span class="line">    vm.__patch__(vm._vnode, <span class="literal">null</span>)</span><br><span class="line">    <span class="comment">// fire destroyed hook</span></span><br><span class="line">    callHook(vm, <span class="string">'destroyed'</span>)</span><br><span class="line">    <span class="comment">// turn off all instance listeners.</span></span><br><span class="line">    vm.$off()</span><br><span class="line">    <span class="comment">// remove __vue__ reference</span></span><br><span class="line">    <span class="keyword">if</span> (vm.$el) &#123;</span><br><span class="line">      vm.$el.__vue__ = <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// release circular reference (#6759)</span></span><br><span class="line">    <span class="keyword">if</span> (vm.$vnode) &#123;</span><br><span class="line">      vm.$vnode.parent = <span class="literal">null</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h4 id="destroyed"><a href="#destroyed" class="headerlink" title="destroyed"></a>destroyed</h4><p>destroyed钩子函数在Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。<br>全部取消订阅</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://fedev.me/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" data-id="ck9gugk7d000x4crx6hxn5lbs" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue%E6%BA%90%E7%A0%81/" rel="tag">vue源码</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%AF%91/" rel="tag">模板编译</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" rel="tag">生命周期</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
 </article>
-
-
   
-    <article id="post-工程化之持续构建" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-   
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
-        
+      
+        </div></section>
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/Microsoft-Graph/" class="archive-article-date">
+  <time datetime="2019-12-17T00:00:00.000Z" itemprop="datePublished">Dec 17</time>
+</a>
+      
   
     <h1 itemprop="name">
-      <a class="article-title" href="/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/">工程化之持续构建</a>
+      <a class="archive-article-title" href="/Microsoft-Graph/">Microsoft Graph 简介以及使用</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h4 id="Travis用于部署前端代码"><a href="#Travis用于部署前端代码" class="headerlink" title=" Travis用于部署前端代码"></a><a href="https://docs.travis-ci.com" target="_blank" rel="noopener"> Travis</a>用于部署前端代码</h4><p>  <strong>概念</strong>： 持续集成服务， 用于绑定gitHub上的项目， 一旦项目push到指定分支,  就会自动捕捉到，然后进行测试和构建， 最后还可以帮你部署到服务器。<br><strong>步骤</strong>: </p>
-<ul>
-<li><p>登陆到<a href="travis-ci.org">官网</a>， 选择你要绑定的github仓库</p>
-</li>
-<li><p>在项目根目录下新建一个travis.yml,这个文件制定了travis的行为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;指定语言</span><br><span class="line">language:node_js                   </span><br><span class="line">&#x2F;&#x2F;语言版本</span><br><span class="line">node_js:</span><br><span class="line">	- &#39;8.11.3&#39; </span><br><span class="line">&#x2F;&#x2F; 执行脚本 默认是npm test                       </span><br><span class="line">script: npm run build</span><br><span class="line">&#x2F;&#x2F; 安装依赖  默认              </span><br><span class="line">install: npm install                 </span><br><span class="line">after_sucess: cp -i .&#x2F;dist&#x2F;index.html .&#x2F;dist&#x2F;404.html</span><br><span class="line">&#x2F;&#x2F; 缓存node_moduels</span><br><span class="line">cache:</span><br><span class="line">	directories: node_modules</span><br><span class="line">&#x2F;&#x2F; 部署到github pages         </span><br><span class="line">deploy:</span><br><span class="line">	provider: pages</span><br><span class="line">  &#x2F;&#x2F; 部署成功之后保留构建成功的文件                    </span><br><span class="line">	skip_cleanup: true				  </span><br><span class="line">	email: maggieyang1994@gmail.com</span><br><span class="line">	github_token: $PUBLISH_TOKEN  </span><br><span class="line">	keep_history: true</span><br><span class="line">  &#x2F;&#x2F; push到github  gh_pages分支上的路径</span><br><span class="line">	local_dir: .&#x2F;dist</span><br><span class="line">  &#x2F;&#x2F; 监测master分支的改动               </span><br><span class="line">	on:branch: master                </span><br><span class="line">	target_branch: gh_pages</span><br></pre></td></tr></table></figure>
-<h5 id="其中deploy的配置项github-token"><a href="#其中deploy的配置项github-token" class="headerlink" title="其中deploy的配置项github_token:"></a>其中deploy的配置项github_token:</h5><p>因为构建完成后travis会将构建成功之后的dist目录push到gh_pages, 需要有github的push的权限，在<a href="https://github.com/settings/tokens" target="_blank" rel="noopener">这里</a>生成，保存到travis的<a href="https://travis-ci.org/maggieyang1994/yirenzhixia/settings" target="_blank" rel="noopener">环境变量</a>里，在这里就可以使用</p>
-</li>
-</ul>
-<ul>
-<li>执行步骤： install —&gt; script —&gt; deploy</li>
-<li><strong><em>注意</em></strong>：构建之后放在github服务器之后， 一切路径都会带上仓库名<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; index&#x2F;router</span><br><span class="line">export default new Router(&#123;</span><br><span class="line">  mode: &quot;history&quot;,</span><br><span class="line">  base: &quot;&#x2F;yirenzhixia&#x2F;&quot;   &#x2F;&#x2F;加上基路劲</span><br><span class="line">  ...</span><br><span class="line">&#125;) </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> &#x2F;&#x2F; index&#x2F;config.js</span><br><span class="line">  export defalt &#x3D; &#123;</span><br><span class="line">   build: &#123;</span><br><span class="line">    index: Path.resolve(&quot;dirname&quot;, &quot;..&#x2F;dist&#x2F;index.thml&quot;);</span><br><span class="line">    assetsRoot： Path.resolve(&quot;dirname&quot;, &quot;..dist&quot;)</span><br><span class="line">    assetsPublicPath: &quot;&#x2F;yirenzhixia&#x2F;&quot;  默认是&#x2F;  修改公共路径</span><br><span class="line">   &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<h5 id="因为travis构建之后将gh-pages当成了静态目录，所以不能处理路由，在地址栏直接访问详情页的时候会出现404页面，所以要么在travis-yml中在after-sucesss也就是script完成之后，-将生成的index-html复制一份到404-html到当前路径，相当于重定向。或者将路由的mode改成hash"><a href="#因为travis构建之后将gh-pages当成了静态目录，所以不能处理路由，在地址栏直接访问详情页的时候会出现404页面，所以要么在travis-yml中在after-sucesss也就是script完成之后，-将生成的index-html复制一份到404-html到当前路径，相当于重定向。或者将路由的mode改成hash" class="headerlink" title="因为travis构建之后将gh-pages当成了静态目录，所以不能处理路由，在地址栏直接访问详情页的时候会出现404页面，所以要么在travis.yml中在after_sucesss也就是script完成之后， 将生成的index.html复制一份到404.html到当前路径，相当于重定向。或者将路由的mode改成hash"></a>因为travis构建之后将gh-pages当成了静态目录，所以不能处理路由，在地址栏直接访问详情页的时候会出现404页面，所以要么在travis.yml中在after_sucesss也就是script完成之后， 将生成的index.html复制一份到404.html到当前路径，相当于重定向。或者将路由的mode改成hash</h5></li>
-</ul>
-<h3 id="Heroku用于部署后台代码"><a href="#Heroku用于部署后台代码" class="headerlink" title="Heroku用于部署后台代码"></a><a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs" target="_blank" rel="noopener">Heroku</a>用于部署后台代码</h3><h3 id="概念：-一种限量免费的云服务，-用来托管后台项目"><a href="#概念：-一种限量免费的云服务，-用来托管后台项目" class="headerlink" title="概念： 一种限量免费的云服务， 用来托管后台项目"></a>概念： 一种限量免费的云服务， 用来托管后台项目</h3><h4 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h4><ol>
-<li><p>下载heroku, 在命令行输入heroku login,之后会进入登陆页面，heroku的身份验证</p>
-</li>
-<li><p>有两种方式可以新建一个heroku项目</p>
-<ul>
-<li><p>命令行：  </p>
-<pre><code>1. 进入到项目根路径 heroku create(创建一个heroku应用和一个空的仓库， 将本地git仓库与heroku仓库关联)
-2. git push heroku master（将本地仓库的代码push到heroku仓库）（每次更新需要手动运行）
-3. 项目根路径新建Procfile, web: node bin/www   start you app的命令语句
-4. 修改端口</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 由于heroku会自动随机分配一个端口， 然后映射到heroku的80端口， 所以后台代码中监听的端口不能写死</span><br><span class="line">var  port  &#x3D;  process.env.PORT  ||  5000;</span><br><span class="line">app.listen(port, () &#x3D;&gt; &#123;console.log(&#96;listen in $&#123;port&#125;&#96;)&#125;)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>直接在<a href="https://dashboard.heroku.com/apps" target="_blank" rel="noopener">官网</a>添加： </p>
-<pre><code>1. 直接关联git仓库
-2. 添加Procifile 和   修改port端口
-3. 甚至可以自动部署， 一旦有提交， 就自动deploy</code></pre></li>
-</ul>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://fedev.me/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/" data-id="ck9gugk6m00074crx5t9o4blr" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Travis/" rel="tag">Travis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/heroku/" rel="tag">heroku</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/" rel="tag">前端工程化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BA/" rel="tag">自动构建</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
 </article>
-
-
   
-    <article id="post-Microsoft-Graph" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-   
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
-        
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/ifttt/" class="archive-article-date">
+  <time datetime="2019-12-17T00:00:00.000Z" itemprop="datePublished">Dec 17</time>
+</a>
+      
   
     <h1 itemprop="name">
-      <a class="article-title" href="/Microsoft-Graph/">Microsoft Graph 简介以及使用</a>
+      <a class="archive-article-title" href="/ifttt/">IFTTT 入门</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><a href="https://docs.microsoft.com/zh-cn/graph/auth-v2-service?view=graph-rest-1.0" target="_blank" rel="noopener">Micosoft Graph</a> 是微软所有服务的统一api, 比如outlook, calendar, oneNote, oneDrive等等, 将微软的所有api都整合到具有单一身份验证的的单一URI命名空间中, 提供更加简单的开发体验。</p>
-<p>Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, 而且还提供通过改变url参数来实现过滤, 排序分页等, 支持多语言.</p>
-<h2 id="关于鉴权"><a href="#关于鉴权" class="headerlink" title="关于鉴权"></a>关于鉴权</h2><p>所有的服务请求在调用之前都必须要取得合法的授权, Micosoft Graph将Azure AD作为服务的提供方, 基于oAuth 2.0<br>有两种方式可以获得token</p>
-<h3 id="代表用户"><a href="#代表用户" class="headerlink" title="- 代表用户"></a>- 代表用户</h3><h4 id="1-首先需要在Azure-Portal中注册一个应用"><a href="#1-首先需要在Azure-Portal中注册一个应用" class="headerlink" title="1. 首先需要在Azure Portal中注册一个应用"></a>1. 首先需要在<a href="https://portal.azure.com/" target="_blank" rel="noopener">Azure Portal</a>中注册一个应用</h4><p> 填写应用基本信息, 应用名称和类型, 这里类型选第三种(支持的账户类型最多), Redirect URL 可以先随便填写, 但是要跟代码中的url保持一致, 注册了app之后, 会自动生成一个<strong>client_id</strong><br/><br> <img src="/images/MicrosoftGraph/2.png" alt=""><br><br/><br><br/><br> <img src="/images/MicrosoftGraph/haa.png" alt=""></p>
-<p>配置应用权限, 这里我选的是email, 以及user.read 并且权限类型应该是<strong>Delegated</strong>委派<br> <img src="/images/MicrosoftGraph/4.png" alt=""></p>
-<p>配置<strong>Client_secret</strong>, 将secret保存, 因为你只能看到一次<br> <img src="/images/MicrosoftGraph/5.png" alt=""></p>
-<h4 id="2-获取授权码（authrization-code）"><a href="#2-获取授权码（authrization-code）" class="headerlink" title="2. 获取授权码（authrization_code）"></a>2. 获取授权码（authrization_code）</h4><p>打开链接<a href="https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=" target="_blank" rel="noopener">https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=</a><strong>${client_id}</strong>&amp;response_type=code&amp;redirect_uri=<a href="http://localhost:3000/auth/callback&response_mode=query&scope=offline_access%20user.read%20mail.read&state=12345" target="_blank" rel="noopener">http://localhost:3000/auth/callback&amp;response_mode=query&amp;scope=offline_access%20user.read%20mail.read&amp;state=12345</a> <br/><br><strong>client_id</strong>为你app注册成功后生成的client_id, <strong>redirect_uri</strong> 为注册app是自己填写的url<br/><br>在浏览器打开, 会跳到登陆授权页面, 通过授权之后会跳到redirect_uri, 并且在url参数后面加上<strong>authrization_code</strong>, 由于我的应用是一个脚本, 不需要跟用户有交互, 直接复制地址栏后面的authrization_code就可以了<br> <img src="/images/MicrosoftGraph/auth.png" alt=""></p>
-<h4 id="4-获取访问令牌-access-token"><a href="#4-获取访问令牌-access-token" class="headerlink" title="4. 获取访问令牌(access_token)"></a>4. 获取访问令牌(access_token)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  url: &#96;https:&#x2F;&#x2F;login.microsoftonline.com&#x2F;common&#x2F;oauth2&#x2F;v2.0&#x2F;token&#96;,</span><br><span class="line">  method: &#39;POST&#39;,</span><br><span class="line">  headers: &#123; &#39;content-type&#39;: &#39;application&#x2F;x-www-form-urlencoded&#39; &#125;,</span><br><span class="line">  data: qs.stringify(&#123;</span><br><span class="line">    code,  &#x2F;&#x2F; 上一步获得的authrization_code</span><br><span class="line">    redirect_uri: &#39;http:&#x2F;&#x2F;localhost:3000&#x2F;auth&#x2F;callback&#39;,</span><br><span class="line">    grant_type: &#96;authorization_code&#96;,</span><br><span class="line">    client_id: &#96;...&#96;,</span><br><span class="line">    scope: &#96;user.read mail.read&#96;,</span><br><span class="line">    client_secret: &#39;...&#39;,</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<p>返回的结果, 会得到一个access_token, 有效期是一个小时, 过期后可以通过refresh_token刷新token</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;token_type&quot;: &quot;Bearer&quot;,</span><br><span class="line">    &quot;scope&quot;: &quot;User.Read Mail.Read&quot;,</span><br><span class="line">    &quot;expires_in&quot;: 3600,</span><br><span class="line">    &quot;ext_expires_in&quot;: 3600,</span><br><span class="line">    &quot;access_token&quot;: &quot;...&quot;,</span><br><span class="line">    &quot;refresh_token&quot;: &quot;...&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h4 id="5-使用token调用Microsoft-Graph"><a href="#5-使用token调用Microsoft-Graph" class="headerlink" title="5. 使用token调用Microsoft Graph"></a>5. 使用token调用Microsoft Graph</h4><p>通过API拿到用户信息, 必须带上Authorization的请求头</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">   url: &#96;https:&#x2F;&#x2F;graph.microsoft.com&#x2F;v1.0&#x2F;users&#96;,</span><br><span class="line">   method: &#39;GET&#39;,</span><br><span class="line">   headers: &#123; &#39;Authorization&#39;: &#96;Bearer $&#123;token&#125;&#96; &#125;,</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
-<h4 id="6-使用refresh-code-刷新access-code-以便可以持续访问"><a href="#6-使用refresh-code-刷新access-code-以便可以持续访问" class="headerlink" title="6. 使用refresh_code 刷新access_code, 以便可以持续访问"></a>6. 使用refresh_code 刷新access_code, 以便可以持续访问</h4><p>会返回一个刷新后的access_token 和 refresh_token, 如果refresh_token没有使用过, 则永远不过期<br>代表用户只需要授权一次, 通过不断refresh, 可以持续获取授权</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">    url: &#96;https:&#x2F;&#x2F;login.microsoftonline.com&#x2F;$&#123;config.tenant&#125;&#x2F;oauth2&#x2F;v2.0&#x2F;token&#96;,</span><br><span class="line">    method: &#39;POST&#39;,</span><br><span class="line">    headers: &#123; &#39;content-type&#39;: &#39;application&#x2F;x-www-form-urlencoded&#39; &#125;,</span><br><span class="line">    data: qs.stringify(&#123;</span><br><span class="line">      refresh_token,</span><br><span class="line">      redirect_uri: &#39;http:&#x2F;&#x2F;localhost:3000&#x2F;auth&#x2F;callback&#39;,</span><br><span class="line">      grant_type: &#96;refresh_token&#96;,</span><br><span class="line">      client_id: &#96;...&#96;,</span><br><span class="line">      scope: &#96;user.read mail.read&#96;,</span><br><span class="line">      client_secret: &#39;...&#39;,</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
-<h3 id="无用户访问"><a href="#无用户访问" class="headerlink" title="- 无用户访问"></a>- 无用户访问</h3><p>无用户访问与代表用户访问流程相似, 不同点在于注册的app Request API Permission 的时候需要选择 <strong>Application permission</strong> 而不是 <strong>Delegated permission</strong>, 且申请的权限大都需要管理员同意[一般用户企业用户], 这里不展开讨论。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://fedev.me/Microsoft-Graph/" data-id="ck9gugk5z00004crx3tip1kkf" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oAuth-2-0/" rel="tag">oAuth 2.0</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/outlook-api/" rel="tag">outlook api</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
 </article>
-
-
   
-    <article id="post-WEB安全之XSS和CSRF" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-   
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
-        
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/" class="archive-article-date">
+  <time datetime="2019-08-17T00:00:00.000Z" itemprop="datePublished">Aug 17</time>
+</a>
+      
   
     <h1 itemprop="name">
-      <a class="article-title" href="/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/">前端安全之XSS和CSRF</a>
+      <a class="archive-article-title" href="/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/">前端安全之XSS和CSRF</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="xss攻击（跨站脚本攻击cross-site-script）"><a href="#xss攻击（跨站脚本攻击cross-site-script）" class="headerlink" title="xss攻击（跨站脚本攻击cross-site script）"></a>xss攻击（跨站脚本攻击cross-site script）</h3><h5 id="概念：-xss是一种代码注入攻击，-由于恶意代码没有经过过滤，-与目标网站的正常代码混在一起-浏览器过于信任来自服务器或者页面上的代码，-使得一些恶意代码在浏览器上运行"><a href="#概念：-xss是一种代码注入攻击，-由于恶意代码没有经过过滤，-与目标网站的正常代码混在一起-浏览器过于信任来自服务器或者页面上的代码，-使得一些恶意代码在浏览器上运行" class="headerlink" title="概念： xss是一种代码注入攻击， 由于恶意代码没有经过过滤， 与目标网站的正常代码混在一起, 浏览器过于信任来自服务器或者页面上的代码， 使得一些恶意代码在浏览器上运行"></a>概念： xss是一种代码注入攻击， 由于恶意代码没有经过过滤， 与目标网站的正常代码混在一起, 浏览器过于信任来自服务器或者页面上的代码， 使得一些恶意代码在浏览器上运行</h5><h5 id="分类：-根据攻击的来源，XSS可以分为存储型，-反射型，DOM型"><a href="#分类：-根据攻击的来源，XSS可以分为存储型，-反射型，DOM型" class="headerlink" title="分类： 根据攻击的来源，XSS可以分为存储型， 反射型，DOM型"></a>分类： 根据攻击的来源，XSS可以分为存储型， 反射型，DOM型</h5><ul>
-<li><p><strong>反射型</strong>（后台的锅，没有处理就直接返回到页面）：当用户点击一个恶意链接，或者提交一个表单，或者进入一个恶意网站， 注入脚本进入被攻击者的网站，web服务器将注入脚本， 服务器未过滤直接返回到用户的浏览器上<br><strong>场景</strong>： 表单提交， 页面跳转</p>
-   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 假设有个链接 http:localhost:5000/welcome?type=&lt;script src="任意脚本"&gt;&lt;/script&gt;</span></span><br><span class="line"><span class="comment">// 后台代码</span></span><br><span class="line">app.get(<span class="string">"/welcome"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req,res</span>)</span>&#123;</span><br><span class="line"> res.send(req.params.type)</span><br><span class="line">&#125;);</span><br><span class="line">只要用户点击了链接  就会执行这个 脚本， 窃取用户的信息</span><br></pre></td></tr></table></figure>
-<p><strong>如何防范反射型</strong>： 后台代码进行对查询参数进行转义后再输入页面</p>
-   <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">app.get(<span class="string">'/welcome'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</span><br><span class="line"> <span class="comment">//对查询参数进行编码，避免XSS攻击</span></span><br><span class="line"> res.send(<span class="built_in">encodeURIComponent</span>(req.params.type))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>DOM型</strong>（前端的锅，javascript代码不够严谨，把不可信的内容插入到了页面上[innerHtml, outHtml, document.write]）<br><strong>场景</strong>： 页面评论追加, 论坛 贴吧</p>
-  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str = <span class="string">"&lt;script&gt;alert(2)&lt;/script&gt;"</span></span><br><span class="line"><span class="built_in">document</span>.write(str); || $(<span class="string">".demo"</span>).html = str</span><br></pre></td></tr></table></figure>
-<p>   <strong>如何防范dom型xss</strong></p>
-  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对输入内容进行转义</span></span><br><span class="line"> <span class="function"><span class="keyword">function</span>  <span class="title">encodeHtml</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span>  str.replace(<span class="regexp">/"/g</span>, <span class="string">'&amp;quot;'</span>)</span><br><span class="line">		.replace(<span class="regexp">/'/g</span>, <span class="string">'&amp;apos;'</span>)</span><br><span class="line">		.replace(<span class="regexp">/&lt;/g</span>, <span class="string">'&amp;lt;'</span>)</span><br><span class="line">		.replace(<span class="regexp">/&gt;/g</span>, <span class="string">'&amp;gt;'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p><strong>存储型XSS</strong>: 前端和后台的锅，前端提交数据到服务器的时候没有做好过滤， 服务器在接受数据的时候， 在存储数据[恶意代码存到了数据库， 每个用户打开这个页面的时候都会执行恶意代码， 影响大]的时候没有做好过滤，前端从服务器请求到数据，没有过滤输出<br>   <strong>如何防范存储型XSS</strong>： 前段后端都进行转义</p>
-</li>
-</ul>
-<h3 id="总结：-如何防范xss攻击"><a href="#总结：-如何防范xss攻击" class="headerlink" title="总结： 如何防范xss攻击"></a><strong>总结： 如何防范xss攻击</strong></h3><ol>
-<li><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CSP" target="_blank" rel="noopener">content Security Policy</a>:在服务器使用 content Security Policy头部来指定策略，或者在前端设置meta标签</p>
-<pre><code>-  script-src https://cdn.jsdelivr.net: 限制可以加载内容的域（可执行脚本的有效来源）
--  img-src https://*  限制图片的来源只允许https协议
--  media-src media1.com media2.com 限制音视频来源
--  ....限制可以通过标签加载的资源的来源 [等等等](http://www.ruanyifeng.com/blog/2016/09/csp.html)</code></pre><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 服务器</span></span><br><span class="line"> res.Header(<span class="string">'Content-Security-Policy'</span>, <span class="keyword">default</span>-src <span class="string">'self'</span>)</span><br><span class="line"> <span class="comment">// html页面</span></span><br><span class="line">&lt;meta  http-equiv=<span class="string">"Content-Security-Policy"</span>  content=<span class="string">"script-src https://cdn.jsdelivr.net; img-src https://*; child-src 'none';"</span>&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>输入内容长度限制</p>
-</li>
-<li><p>输入内容限制（禁止特殊字符）</p>
-</li>
-<li><p>服务端设置httpOnly禁止读取cookie</p>
-</li>
-</ol>
-<h3 id="CSRF攻击（跨站请求伪造-cross-site-requrie-forgery）："><a href="#CSRF攻击（跨站请求伪造-cross-site-requrie-forgery）：" class="headerlink" title="CSRF攻击（跨站请求伪造 cross-site requrie forgery）："></a>CSRF攻击（跨站请求伪造 cross-site requrie forgery）：</h3><h5 id="概念：-用户在被攻击网站登陆之后，-诱使用户进入第三方网站，-在第三方网站中向被攻击网站发送跨站请求（form提交，-src脚本，-图片地址，-链接），此时这个请求会携带被攻击网站的cookie-绕过被攻击网站的后台验证"><a href="#概念：-用户在被攻击网站登陆之后，-诱使用户进入第三方网站，-在第三方网站中向被攻击网站发送跨站请求（form提交，-src脚本，-图片地址，-链接），此时这个请求会携带被攻击网站的cookie-绕过被攻击网站的后台验证" class="headerlink" title="概念： 用户在被攻击网站登陆之后， 诱使用户进入第三方网站， 在第三方网站中向被攻击网站发送跨站请求（form提交， src脚本， 图片地址， 链接），此时这个请求会携带被攻击网站的cookie.绕过被攻击网站的后台验证"></a>概念： 用户在被攻击网站登陆之后， 诱使用户进入第三方网站， 在第三方网站中向被攻击网站发送跨站请求（form提交， src脚本， 图片地址， 链接），此时这个请求会携带被攻击网站的cookie.绕过被攻击网站的后台验证</h5><h5 id="场景：-用户已经登陆了支付宝网站，-生成了cookie等相关登录凭证，然后我打开了一个钓鱼网站，这个钓鱼网站自动发起了表单提交申请扣款，-这个时候会自动把cookie带过去，-绕过了支付宝的后台验证"><a href="#场景：-用户已经登陆了支付宝网站，-生成了cookie等相关登录凭证，然后我打开了一个钓鱼网站，这个钓鱼网站自动发起了表单提交申请扣款，-这个时候会自动把cookie带过去，-绕过了支付宝的后台验证" class="headerlink" title="场景： 用户已经登陆了支付宝网站， 生成了cookie等相关登录凭证，然后我打开了一个钓鱼网站，这个钓鱼网站自动发起了表单提交申请扣款， 这个时候会自动把cookie带过去， 绕过了支付宝的后台验证"></a>场景： 用户已经登陆了支付宝网站， 生成了cookie等相关登录凭证，然后我打开了一个钓鱼网站，这个钓鱼网站自动发起了表单提交申请扣款， 这个时候会自动把cookie带过去， 绕过了支付宝的后台验证</h5><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">form</span>  <span class="attr">name</span>=<span class="string">"sneak"</span>  <span class="attr">action</span>=<span class="string">"http://localhost:3001/api/transfer"</span>  <span class="attr">method</span>=<span class="string">"post"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span>  <span class="attr">type</span>=<span class="string">"hidden"</span>  <span class="attr">name</span>=<span class="string">"payee"</span>  <span class="attr">value</span>=<span class="string">"yvette"</span>  /&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">input</span>  <span class="attr">type</span>=<span class="string">"hidden"</span>  <span class="attr">name</span>=<span class="string">"amount"</span>  <span class="attr">value</span>=<span class="string">"2000"</span>  /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"> <span class="built_in">document</span>.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span></span><br><span class="line"><span class="actionscript"> <span class="comment">// 当你的浏览器载入这个页面之后，上面的表单将会由一个简单的 JS 片段来实现提交。</span></span></span><br><span class="line"><span class="javascript">   <span class="built_in">document</span>.sneak.submit();</span></span><br><span class="line"> &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>如何防范csrf攻击攻击</strong></p>
-<ol>
-<li><p>使用验证码</p>
-</li>
-<li><p>使用token</p>
-<p>CSRF攻击之所以能够成功，是因为服务器误把攻击者发送的请求当成了用户自己的请求。<br>那么我们可以要求所有的用户请求都携带一个CSRF攻击者无法获取到的Token。<br>服务器通过校验请求是否携带正确的Token，来把正常的请求和攻击的请求区分开。<br>跟验证码类似，只是用户无感知。</p>
-<ol>
-<li>服务端生成一个token, 加密传给用户</li>
-<li>用户在请求时， 需要携带这个token</li>
-<li>服务端验证token是否正确</li>
-</ol>
-</li>
-<li><p>判断refererr，判断来源</p>
-</li>
-<li><p>设置samesite的cookie, 让跨域不携带cookie(ajax默认携带)，但是axios默认不携带</p>
-</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://fedev.me/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/" data-id="ck9gugk6f00024crxb7rogktk" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web%E5%AE%89%E5%85%A8/" rel="tag">web安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" rel="tag">跨站脚本攻击</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/" rel="tag">跨站请求伪造</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
 </article>
-
-
   
-    <article id="post-ifttt" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-   
-  </div>
-  <div class="article-inner">
     
     
-      <header class="article-header">
-        
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/" class="archive-article-date">
+  <time datetime="2019-08-15T00:00:00.000Z" itemprop="datePublished">Aug 15</time>
+</a>
+      
   
     <h1 itemprop="name">
-      <a class="article-title" href="/ifttt/">IFTTT 入门</a>
+      <a class="archive-article-title" href="/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/">工程化之持续构建</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><h5 id="由于公司短信提供商服务不稳定-多次发送邮件失败-客户接收不到取件的短信-为了监控短信服务是否正常-需要做一个SMS-Health-Check"><a href="#由于公司短信提供商服务不稳定-多次发送邮件失败-客户接收不到取件的短信-为了监控短信服务是否正常-需要做一个SMS-Health-Check" class="headerlink" title="由于公司短信提供商服务不稳定, 多次发送邮件失败, 客户接收不到取件的短信, 为了监控短信服务是否正常, 需要做一个SMS Health Check"></a>由于公司短信提供商服务不稳定, 多次发送邮件失败, 客户接收不到取件的短信, 为了监控短信服务是否正常, 需要做一个<br/>SMS Health Check</h5><ol>
-<li><p>每小时给测试机上发送一条sms</p>
-</li>
-<li><p>将sms转发成Email 发送到固定邮箱</p>
-</li>
-<li><p>十五分钟之后 通过Microsoft Graph 的接口 查看是否收到邮件</p>
-</li>
-<li><p>收到则为正常 收不到则发送报警邮件</p>
-</li>
-</ol>
-<h3 id="关于IFTTT"><a href="#关于IFTTT" class="headerlink" title="关于IFTTT"></a>关于IFTTT</h3><p>sms转发email的app有很多, 但是大多数只支持Andriod, <a href="https://ifttt.com/" target="_blank" rel="noopener">IFTTT</a>支持Andriod和iPhone, 且与其他的app相比IFTTT更加灵活, IFTTT是英文 If This Then That 的缩写, 顾名思义, 你可以在IFTTT上设定一个条件, 让系统为你做出特定的动作, 如果触发了一件事, 则执行设定好的另一件事。<br><img src="/images/IFTTT/iftttDesc.png" alt=""><br>一个IFTTT称之为recipes, recipes的任务是打通[<strong>this</strong>]  [<strong>that</strong>]两个服务, this为触发器频道, that 为动作器频道。如果收到了来自特定号码的短信, 则转发邮件到特定邮箱, 收短信即为触发器, 发邮件为动作器 。</p>
-<p>点击头像 Create按钮<br>&darr; <br/><br>点击 <strong>+</strong> 添加触发器 选择你需要的服务, 这里是SMS, 目前SMS只支持Andriod, 点击Create trigger<br>&darr; <br/><br>点击Then 后面的加号添加动作器, 同样选择你需要的服务, 点击Create action<br><img src="/images/IFTTT/step.png" alt=""></p>
-<p>最后会生成一个recipes<br><img src="/images/IFTTT/res.png" alt=""><br>目前 IFTTT 所支持的「频道」非常丰富, 常用的如印象笔记、Dropbox、邮件、手机短信、Gmail、Google Drive、谷歌日历、Instagram、GitHub、OneDrive、Twitter、Facebook、天气预报等等。它们之中大多数既可以当触发器, 也能作为动作来使用的, 你可以在这里看到所有支持的频道。<br><img src="/images/IFTTT/iftttService.png" alt=""></p>
-<p>除了自己配置一个recipes之外, IFTTT已经有了很多已经配置好的recipes, 基本都能满足需求<br><img src="/images/IFTTT/iftttRecipes.png" alt=""><br>你可以使用IFTTT 配置很多有意思的服务, 比如说</p>
-<ul>
-<li><p>在豆瓣上点赞了一边文章 保存到印象笔记</p>
-</li>
-<li><p>如果下雨 发送短信提醒带伞</p>
-</li>
-<li><p>发一条微博 同步到facebook 和 twitter</p>
-</li>
-<li><p>关注的idol发推了 提醒你去看</p>
-</li>
-<li><p>facebook 点赞了一张图片 自动保存</p>
-</li>
-<li><p>…………….</p>
-</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://fedev.me/ifttt/" data-id="ck9gugk6k00064crxca361nnb" class="article-share-link">Share</a>
-      
-      
-    </footer>
+    </header>
   </div>
-  
 </article>
-
-
+  
+  
+    </div></section>
   
 
 
@@ -530,16 +273,6 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Categories</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/VUE%E6%BA%90%E7%A0%81/">VUE源码</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%89%8D%E7%AB%AF/">web前端</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/web%E5%AE%89%E5%85%A8/">web安全</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/">前端工程化</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
       <a href="/tags/Travis/" style="font-size: 10px;">Travis</a> <a href="/tags/diff%E7%AE%97%E6%B3%95/" style="font-size: 10px;">diff算法</a> <a href="/tags/heroku/" style="font-size: 10px;">heroku</a> <a href="/tags/oAuth-2-0/" style="font-size: 10px;">oAuth 2.0</a> <a href="/tags/outlook-api/" style="font-size: 10px;">outlook api</a> <a href="/tags/vue%E6%BA%90%E7%A0%81/" style="font-size: 20px;">vue源码</a> <a href="/tags/web%E5%AE%89%E5%85%A8/" style="font-size: 10px;">web安全</a> <a href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/" style="font-size: 10px;">前端工程化</a> <a href="/tags/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%AF%91/" style="font-size: 10px;">模板编译</a> <a href="/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" style="font-size: 10px;">生命周期</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">自动构建</a> <a href="/tags/%E8%99%9A%E6%8B%9FDOM/" style="font-size: 10px;">虚拟DOM</a> <a href="/tags/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" style="font-size: 10px;">跨站脚本攻击</a> <a href="/tags/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/" style="font-size: 10px;">跨站请求伪造</a>
@@ -564,7 +297,7 @@
   
     <a href="/" class="mobile-nav-link">Home</a>
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
+    <a href="/about" class="mobile-nav-link">About</a>
   
 </nav>
     
