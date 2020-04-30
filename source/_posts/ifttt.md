@@ -3,7 +3,7 @@
 title: IFTTT 入门
 date: 2019-12-17
 categories: 
-- web前端
+- WEB前端
 rank: 6
 
 ---

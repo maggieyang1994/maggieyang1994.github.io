@@ -4,7 +4,7 @@
 title: 前端安全之XSS和CSRF
 date: 2019-08-17
 categories: 
-- web安全
+- WEB安全
 rank: 5
 tags: 
   - web安全
