@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>oAuth2.0四种验证方式的实际应用 | Hello maggie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="背景：在实际工作中， 项目经常需要访问用户其他应用的资源，这里给项目中遇到的几种验证方式做个总结。 概念： oAuth2.0是什么？oauth就是一种授权机制，第三方应用申请一个令牌来访问或者修改用户资源，用户告诉系统，同意第三方应用获取数据，系统就会生成一个短期的令牌代替密码提供给第三方使用 应用登记在授权开始之前， 需要到对应的标识平台去申请应用， 获取client_id和client_sec">
+<meta property="og:type" content="article">
+<meta property="og:title" content="oAuth2.0四种验证方式的实际应用">
+<meta property="og:url" content="http://fedev.me/oAuth2.0/index.html">
+<meta property="og:site_name" content="Hello maggie">
+<meta property="og:description" content="背景：在实际工作中， 项目经常需要访问用户其他应用的资源，这里给项目中遇到的几种验证方式做个总结。 概念： oAuth2.0是什么？oauth就是一种授权机制，第三方应用申请一个令牌来访问或者修改用户资源，用户告诉系统，同意第三方应用获取数据，系统就会生成一个短期的令牌代替密码提供给第三方使用 应用登记在授权开始之前， 需要到对应的标识平台去申请应用， 获取client_id和client_sec">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-04-15T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-04-30T10:56:38.893Z">
+<meta property="article:author" content="maggie">
+<meta property="article:tag" content="oAuth2.0">
+<meta property="article:tag" content="shopify">
+<meta name="twitter:card" content="summary">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <img src="/css/images/avatar.jpg" itemprop="image" id="avatar">
+        <a href="/" id="logo">Hello maggie</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">To be a good man</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/about">About</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://fedev.me"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-oAuth2.0" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+   
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      oAuth2.0四种验证方式的实际应用
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="背景："><a href="#背景：" class="headerlink" title="背景："></a>背景：</h3><p>在实际工作中， 项目经常需要访问用户其他应用的资源，这里给项目中遇到的几种验证方式做个总结。</p>
+<h3 id="概念：-oAuth2-0是什么？"><a href="#概念：-oAuth2-0是什么？" class="headerlink" title="概念： oAuth2.0是什么？"></a>概念： oAuth2.0是什么？</h3><p>oauth就是一种授权机制，第三方应用申请一个令牌来访问或者修改用户资源，用户告诉系统，同意第三方应用获取数据，系统就会生成一个短期的令牌代替密码提供给第三方使用</p>
+<h4 id="应用登记"><a href="#应用登记" class="headerlink" title="应用登记"></a>应用登记</h4><p>在授权开始之前， 需要到对应的标识平台去申请应用， 获取<strong>client_id</strong>和<strong>client_secret</strong>,以及填写用户登陆成功之后跳转的<strong>redirect-uri</strong>, 以microsoft举例， 对应的标志平台是<a href="https://portal.azure.com/" target="_blank" rel="noopener">Azure</a>, 注册应用之后会生成相关的client_id和client_secret</p>
+<h3 id="oAuth2-0的四种方式"><a href="#oAuth2-0的四种方式" class="headerlink" title="oAuth2.0的四种方式"></a>oAuth2.0的四种方式</h3><ul>
+<li>授权码</li>
+<li>密码式</li>
+<li>客户端凭证</li>
+<li>隐藏式</li>
+</ul>
+<h4 id="第一种：-授权码"><a href="#第一种：-授权码" class="headerlink" title="第一种： 授权码"></a>第一种： 授权码</h4><p><a href="https://github.com/maggieyang1994/oAuth2.0" target="_blank" rel="noopener">仓库地址</a><br>授权码方式是目前应用的最广泛也是最安全的方式， 主要流程就是<br>    1. 构造一个链接<br>    2. 用户点击登陆授权，生成一个授权码，将授权码以url参数带到指定的redirect-url<br>    3.  后端监听回调url, 通过授权码再获取令牌</p>
+<p>适用户于有后端的web应用， 以Microsoft api为例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构造一个链接</span></span><br><span class="line"><span class="keyword">const</span>  microsoft_client_id = <span class="string">'c6d9df0f-f6d8-47eff8-9a68-37ca5dbe8b54'</span>;</span><br><span class="line"><span class="keyword">const</span>  microsoft_authorize_uri = <span class="string">'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'</span>;</span><br><span class="line"><span class="keyword">const</span>  microsoft_redirect_uri = <span class="string">'http://localhost:8080/oauth/microsoft/redirect'</span>;</span><br><span class="line">link = <span class="string">`<span class="subst">$&#123;microsoft_authorize_uri&#125;</span>?client_id=<span class="subst">$&#123;microsoft_client_id&#125;</span>&amp;response_type=code&amp;redirect_uri=<span class="subst">$&#123;microsoft_redirect_uri&#125;</span>&amp;scope=offline_access%20user.read%20mail.read`</span>;</span><br></pre></td></tr></table></figure>
+<p>其中<code>respense_type = code</code>表示要求返回授权码,client_id是注册应用时的id, <code>redirect_uri</code>是用户登陆成功后跳的路由, <code>scope</code> 指想要获取的权限范围<br>用户通过授权并登陆之后</p>
+<p>后端代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 监听redirect-url</span></span><br><span class="line">app.use(route.get(<span class="string">'/oauth/microsoft/redirect'</span>, <span class="keyword">async</span> ctx =&gt; &#123;</span><br><span class="line">	<span class="comment">// 获取到授权码  通过授权码获取令牌</span></span><br><span class="line">	<span class="keyword">const</span>  requestToken = ctx.request.query.code;</span><br><span class="line">	<span class="keyword">const</span>  tokenResponse = <span class="keyword">await</span>  axios(&#123;</span><br><span class="line">		url:  <span class="string">`https://login.microsoftonline.com/common/oauth2/v2.0/token`</span>,</span><br><span class="line">		method:  <span class="string">'POST'</span>,</span><br><span class="line">		headers: &#123; <span class="string">'content-type'</span>:  <span class="string">'application/x-www-form-urlencoded'</span> &#125;,</span><br><span class="line">		data:  qs.stringify(&#123;</span><br><span class="line">			code:  requestToken,</span><br><span class="line">			redirect_uri:  <span class="string">'http://localhost:8080/oauth/microsoft/redirect'</span>,</span><br><span class="line">			grant_type:  <span class="string">`authorization_code`</span>,</span><br><span class="line">			client_id:  <span class="string">`c6d9df0f-f6d8-47e8-9adfdfd68-37ca5dbe8b54`</span>,</span><br><span class="line">			scope:  <span class="string">`user.read mail.read`</span>,</span><br><span class="line">			client_secret:  <span class="string">'WlN:FT3mH6xefdfdfMmx_LN2tRbwA4YIx-[u-'</span>,</span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>其中 <code>code</code>是拿到的授权码， <code>grant_type: authorization_code</code>表示当前授权方式是授权码,  <code>redirect_uri</code>是令牌颁发后的回调地址<br>最终会返回令牌和刷新令牌, 令牌一般是会有有效期的， refresh_token 可以维持token持续使用</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;    </span><br><span class="line">  <span class="string">"access_token"</span>:<span class="string">"ACCESS_TOKEN"</span>,</span><br><span class="line">  <span class="string">"expires_in"</span>:<span class="number">2592000</span>,</span><br><span class="line">  <span class="string">"refresh_token"</span>:<span class="string">"REFRESH_TOKEN"</span>,</span><br><span class="line">  <span class="string">"scope"</span>:<span class="string">"read"</span>,</span><br><span class="line">  <span class="string">"uid"</span>:<span class="number">100101</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="第二种：-密码式"><a href="#第二种：-密码式" class="headerlink" title="第二种： 密码式"></a>第二种： 密码式</h4><p>如果高度信任某个应用， 也可以直接把用户名和密码直接告诉应用，直接使用 用户名和密码来申请资源， 以<strong>shopify</strong>举例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  auth = &#123;</span><br><span class="line">	username:  <span class="string">'e31dcb52ddfdd1025cafdd0a4ef7fff866b86aa4'</span>,</span><br><span class="line">	password:  <span class="string">'00e3cd87c1d6db8fcdffdfd3051a286407bbf4'</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 拿到shopify商店 的所有产品信息</span></span><br><span class="line"><span class="keyword">const</span>  getDataFromShopify = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">let</span>  url = <span class="string">"https://maggieteststore1.myshopify.com/admin/api/2019-10/products.json"</span></span><br><span class="line">	<span class="keyword">return</span>  axios(&#123;</span><br><span class="line">		method:  <span class="string">'get'</span>,</span><br><span class="line">		url,</span><br><span class="line">		auth,</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="第三种：-凭证式"><a href="#第三种：-凭证式" class="headerlink" title="第三种： 凭证式"></a>第三种： 凭证式</h4><p>适用于没有前端的后台应用， 不需要跟用户有交互，代表第三方应用而不是代表用户, 以<strong>百度OCR</strong>图片转文字为例</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  url = <span class="string">"https://aip.baidubce.com/oauth/2.0/token"</span>;</span><br><span class="line"><span class="keyword">let</span>  grant_type = <span class="string">"client_credentials"</span>;</span><br><span class="line"><span class="keyword">let</span>  client_id = <span class="string">"oAuOqOhDddyqiiSwTc4XiY0ZhI"</span>;</span><br><span class="line"><span class="keyword">let</span>  client_secret = <span class="string">"A8IvA6dfdfddKhI2he9GuG8wxfvgRmFZL33UZq"</span>;</span><br><span class="line">axios.get(url, &#123;</span><br><span class="line">	params: &#123;</span><br><span class="line">		grant_type,</span><br><span class="line">		client_id,</span><br><span class="line">		client_secret</span><br><span class="line">	&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>其中<code>grant_type=client_credentials</code>表示授权采用凭证式，<code>client_id</code>和<code>client_secret</code>用户验证身份</p>
+<h4 id="第四种：-隐藏式"><a href="#第四种：-隐藏式" class="headerlink" title="第四种： 隐藏式"></a>第四种： 隐藏式</h4><p>适用于纯前端应用， 没有后端，实际项目中没有应用， 后面再来补充</p>
+<ol>
+<li>a网站提供一个链接， 调到b网站， 授权用户数据给a<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> url = https:<span class="comment">//b.com/oauth/authorize?</span></span><br><span class="line">  response_type=token&amp;</span><br><span class="line">  client_id=CLIENT_ID&amp;</span><br><span class="line">  redirect_uri=CALLBACK_URL&amp;</span><br><span class="line">  scope=read</span><br></pre></td></tr></table></figure>
+其中<code>response_type = token</code>代表不需要授权码，直接返回令牌<ol start="2">
+<li>用户跳转到b网站， 登录后跳回到b网站， 同时将令牌作为url参数传给a网站， 前端页面直接通过url参数取</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://fedev.me/oAuth2.0/" data-id="ck9mnlzxj00080nx79h4xgroo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oAuth2-0/" rel="tag">oAuth2.0</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shopify/" rel="tag">shopify</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">结合源码看生命周期</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">Directory</h3>
+  <div class="widget">
+    <ul>
+      
+      <li>
+        WEB前端
+        <ul>
+          
+          <li>
+            <a href="/Microsoft-Graph/">Microsoft Graph 简介以及使用</a>
+          </li>
+          
+          <li>
+            <a href="/ifttt/">IFTTT 入门</a>
+          </li>
+          
+          <li>
+            <a href="/oAuth2.0/">oAuth2.0四种验证方式的实际应用</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+      <li>
+        WEB安全
+        <ul>
+          
+          <li>
+            <a href="/WEB%E5%AE%89%E5%85%A8%E4%B9%8BXSS%E5%92%8CCSRF/">前端安全之XSS和CSRF</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+      <li>
+        前端工程化
+        <ul>
+          
+          <li>
+            <a href="/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/">工程化之持续构建</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+      <li>
+        VUE源码
+        <ul>
+          
+          <li>
+            <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8Bdiff%E7%AE%97%E6%B3%95/">diff算法</a>
+          </li>
+          
+          <li>
+            <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">结合源码看生命周期</a>
+          </li>
+          
+        </ul>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Travis/" style="font-size: 10px;">Travis</a> <a href="/tags/diff%E7%AE%97%E6%B3%95/" style="font-size: 10px;">diff算法</a> <a href="/tags/heroku/" style="font-size: 10px;">heroku</a> <a href="/tags/oAuth-2-0/" style="font-size: 10px;">oAuth 2.0</a> <a href="/tags/oAuth2-0/" style="font-size: 10px;">oAuth2.0</a> <a href="/tags/outlook-api/" style="font-size: 10px;">outlook api</a> <a href="/tags/shopify/" style="font-size: 10px;">shopify</a> <a href="/tags/vue%E6%BA%90%E7%A0%81/" style="font-size: 20px;">vue源码</a> <a href="/tags/web%E5%AE%89%E5%85%A8/" style="font-size: 10px;">web安全</a> <a href="/tags/%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96/" style="font-size: 10px;">前端工程化</a> <a href="/tags/%E6%A8%A1%E6%9D%BF%E7%BC%96%E8%AF%91/" style="font-size: 10px;">模板编译</a> <a href="/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" style="font-size: 10px;">生命周期</a> <a href="/tags/%E8%87%AA%E5%8A%A8%E6%9E%84%E5%BB%BA/" style="font-size: 10px;">自动构建</a> <a href="/tags/%E8%99%9A%E6%8B%9FDOM/" style="font-size: 10px;">虚拟DOM</a> <a href="/tags/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BB/" style="font-size: 10px;">跨站脚本攻击</a> <a href="/tags/%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/" style="font-size: 10px;">跨站请求伪造</a>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 maggie<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/about" class="mobile-nav-link">About</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
