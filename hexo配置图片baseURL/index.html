@@ -5,14 +5,20 @@
   
 
   
-  <title>Tag: 生命周期 | Hello maggie</title>
+  <title>hexo配置图片baseURL | Hello maggie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hello maggie">
-<meta property="og:url" content="http://fedev.me/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/index.html">
+  <meta name="description" content="由于博客页面托管于github,  加载图片的时候会很慢, 图片压缩之后效果仍然不明显, 于是将图片托管于腾讯云对象存储.那么就需要一个一个的更改图片, 假设以后图片的域名发生了改变, 又需要逐个更改, 增加了很多不必要的劳动. 于是配置图片basicURL, 一处定义, 多处使用. markdown插入图片有两种方式:  ![](图片地址) &lt;img src&#x3D;&quot;图片地址&amp;quot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo配置图片baseURL">
+<meta property="og:url" content="http://fedev.me/hexo%E9%85%8D%E7%BD%AE%E5%9B%BE%E7%89%87baseURL/index.html">
 <meta property="og:site_name" content="Hello maggie">
+<meta property="og:description" content="由于博客页面托管于github,  加载图片的时候会很慢, 图片压缩之后效果仍然不明显, 于是将图片托管于腾讯云对象存储.那么就需要一个一个的更改图片, 假设以后图片的域名发生了改变, 又需要逐个更改, 增加了很多不必要的劳动. 于是配置图片basicURL, 一处定义, 多处使用. markdown插入图片有两种方式:  ![](图片地址) &lt;img src&#x3D;&quot;图片地址&amp;quot">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-05-02T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-05-06T07:15:55.820Z">
 <meta property="article:author" content="maggie">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="markdown">
 <meta name="twitter:card" content="summary">
   
   
@@ -63,40 +69,64 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
+        <section id="main"><article id="post-hexo配置图片baseURL" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+   
+  </div>
+  <div class="article-inner">
     
     
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/" class="archive-article-date">
-  <time datetime="2020-03-19T00:00:00.000Z" itemprop="datePublished">Mar 19</time>
-</a>
-      
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/VUE%E6%BA%90%E7%A0%81%E4%B9%8B%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/">结合源码看生命周期</a>
+    <h1 class="article-title" itemprop="name">
+      hexo配置图片baseURL
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>由于博客页面托管于github,  加载图片的时候会很慢, 图片压缩之后效果仍然不明显, 于是将图片托管于腾讯云对象存储.那么就需要一个一个的更改图片, 假设以后图片的域名发生了改变, 又需要逐个更改, 增加了很多不必要的劳动. 于是配置图片basicURL, 一处定义, 多处使用.</p>
+<p>markdown插入图片有两种方式:</p>
+<ol>
+<li><code>![](图片地址)</code></li>
+<li><code>&lt;img src=&quot;图片地址&quot;&gt;&lt;/img&gt;</code></li>
+</ol>
+<p>其中第一种插入方式在以下方法中不适用</p>
+<p>以下是根据第二种方式设置图片公共路径的方法：</p>
+<ol>
+<li>在根目录下创建一个scripts文件夹, 将你的脚本放置在该文件夹下, 在启动的时候会自动载入脚本</li>
+<li>添加hexo标签插件<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//scripts/image.js</span></span><br><span class="line">hexo.extend.tag.register(<span class="string">'imagePath'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">args, content</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">let</span> basicUrl = <span class="string">'https://blog-1302010797.cos.ap-guangzhou.myqcloud.com'</span></span><br><span class="line">  <span class="keyword">return</span> <span class="string">`&lt;img src = "<span class="subst">$&#123;basicUrl&#125;</span>/<span class="subst">$&#123;args[<span class="number">0</span>]&#125;</span>" /&gt;`</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+相当于定义了一个全局方法, 其中imagePath是方法名, args是调用imagePath时传入的参数, 该方法返回一个拼接图片地址的img标签</li>
+<li>markdown中使用<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% imagePath  images/<span class="number">1.</span>png %&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
 
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://fedev.me/hexo%E9%85%8D%E7%BD%AE%E5%9B%BE%E7%89%87baseURL/" data-id="ck9v0cztl00060krgancb0egc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/markdown/" rel="tag">markdown</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/oAuth2.0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">oAuth2.0四种验证方式的实际应用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         
