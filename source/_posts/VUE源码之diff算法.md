@@ -12,7 +12,7 @@ tags:
 
 ---
 ### 流程图
-![](/images/VUE_DIFF/流程图.png)
+ {% path  VUE_DIFF/流程图.png %}
 **触发diff算法的过程**: 派发更新`dep.notify`(observer/index.js) --> `wather.update` 将回调加入`queueWathcher`等待队列(obserber/wather.js) --> 去除重复之后等到下一个事件循环执行回调(observer/scheduler.js) ---> 执行`vm.__patch__(prevVnode, vnode)`(instance/lifecycle.js), 下面来看patch.js
 #### patch源码（代码简化版本）
 ```javascript
@@ -207,7 +207,7 @@ function updateChildren (parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly
   }
 ```
 ##### 图解diff过程
-![](/images/VUE_DIFF/diff.png)
+ {% path  VUE_DIFF/diff.png %}
 1. 第一步
 ```javascript
  oldStartVnode === newStartVnode // oldStartVnode保持不变

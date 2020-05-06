@@ -25,19 +25,19 @@ Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, �
 ###  - 代表用户
  ####  1. 首先需要在[Azure Portal](https://portal.azure.com/)中注册一个应用
  填写应用基本信息, 应用名称和类型, 这里类型选第三种(支持的账户类型最多), Redirect URL 可以先随便填写, 但是要跟代码中的url保持一致, 注册了app之后, 会自动生成一个**client_id**<br/>
- ![](/images/MicrosoftGraph/2.png)
+ {% path  MicrosoftGraph/2.png %}
 <br/>
 <br/>
- ![](/images/MicrosoftGraph/haa.png)
+ {% path  MicrosoftGraph/haa.png %}
 
 
 配置应用权限, 这里我选的是email, 以及user.read 并且权限类型应该是**Delegated**委派
- ![](/images/MicrosoftGraph/4.png)
+ {% path  MicrosoftGraph/4.png %}
 
 
 
 配置**Client_secret**, 将secret保存, 因为你只能看到一次
- ![](/images/MicrosoftGraph/5.png)
+ {% path  MicrosoftGraph/5.png %}
 
 
 #### 2. 获取授权码（authrization_code）
@@ -45,7 +45,7 @@ Microsoft Graph是一套RESTful的接口, 通过标准的http方法访问到, �
 打开链接[https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=](https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=)**${client_id}**&response_type=code&redirect_uri=[http://localhost:3000/auth/callback&response_mode=query&scope=offline_access%20user.read%20mail.read&state=12345](http://localhost:3000/auth/callback&response_mode=query&scope=offline_access%20user.read%20mail.read&state=12345) <br/>
 **client_id**为你app注册成功后生成的client_id, **redirect_uri** 为注册app是自己填写的url<br/>
 在浏览器打开, 会跳到登陆授权页面, 通过授权之后会跳到redirect_uri, 并且在url参数后面加上**authrization_code**, 由于我的应用是一个脚本, 不需要跟用户有交互, 直接复制地址栏后面的authrization_code就可以了
- ![](/images/MicrosoftGraph/auth.png)
+ {% path  MicrosoftGraph/auth.png %}
 #### 4. 获取访问令牌(access_token)
 ```
   axios({

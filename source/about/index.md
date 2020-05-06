@@ -11,6 +11,8 @@ date: 2020-04-27 11:44:28
 
 使用landscape主题 在主题上加以优化
 
+图片托管于 [腾讯云](https://console.cloud.tencent.com/cos5/bucket/setting?type=objectDetail&bucketName=blog-1302010797&path=%252Fbanner_mini.jpg&region=ap-guangzhou)
+
 [源文件仓库](https://github.com/maggieyang1994/maggieyang1994.github.io)
 
 [构建记录](https://travis-ci.org/github/maggieyang1994/maggieyang1994.github.io)
