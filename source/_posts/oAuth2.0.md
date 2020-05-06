@@ -5,7 +5,7 @@ categories:
 - WEB前端
 rank: 3
 tags: 
-  - oAuth2.0
+  - oAuth 2.0
   - shopify
   - 
   - 

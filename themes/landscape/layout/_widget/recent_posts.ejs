@@ -7,7 +7,7 @@
       <li>
         <%= categories %>
         <ul>
-          <%site.posts.filter( y => y.categories.data[0].name === categories).forEach(cur => { %>
+          <%site.posts.filter( y => y.categories.data[0].name === categories).sort('rank', 1).forEach(cur => { %>
           <li>
             <a href="<%- url_for(cur.path) %>"><%= cur.title %></a>
           </li>
