@@ -12,7 +12,7 @@ tags:
 ---
 
 ![](https://cn.vuejs.org/images/lifecycle.png)
-
+### 单组件的生命周期
 #### beforeCreate
 
 ```javascript
@@ -59,6 +59,7 @@ export function initState(vm: Component) {
 
 [链接](https://juejin.im/post/5ccafd4d51882540d472a90e)
 vue 基于源码构建 会有两个版本 一个是运行时 和 运行时加编译器，挂载的时候有两条分支
+webpack中如果配置了`vue-loader`,
 如果没有指定 render 函数 则需要编译器将 template 模板编译成 render 函数(这里模板编译不做详细介绍)
 如果指定了 render 函数 则不需要编译器
 
@@ -340,3 +341,39 @@ Vue.prototype.$destroy = function () {
 #### destroyed
 destroyed钩子函数在Vue 实例销毁后调用。调用后，Vue 实例指示的所有东西都会解绑定，所有的事件监听器会被移除，所有的子实例也会被销毁。
 全部取消订阅
+
+### 父子组件的生命周期
+#### 初始化的时候
+```
+父组件beforeCreated
+父组件Created
+父组件beforeMount
+  子组件beforeCreated
+  子组件父组件Created
+  子组件beforeMount
+  子组件mounted
+父组件mounted
+父组件beforeUpadte
+父组件Upadted
+```
+注意： 初始化的时候子组件挂载完成之后会触发一次父组件的update事件（仅仅在初始化的时候）
+#### 子组件更新的时候
+子组件和父组件 的data在更新的时候 互不干扰
+但是如果修改了props
+```
+父组件beforeUpate
+   子组件beforeUpate
+   子组件Upadted
+父组件Upadted
+```
+#### 子组件销毁的时候
+子组件销毁并不会触发父组件更新
+#### 父组件销毁的时候
+```
+父组件beforeDestroy
+   子组件beforeDestroy
+   子组件destroyed
+父组件destroyed
+```
+### 兄弟组件的生命周期
+互不干扰
