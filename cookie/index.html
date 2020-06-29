@@ -5,14 +5,19 @@
   
 
   
-  <title>Tag: Travis | Hello maggie</title>
+  <title>HTTP Cookie | Hello maggie</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hello maggie">
-<meta property="og:url" content="http://fedev.me/tags/Travis/index.html">
+  <meta name="description" content="Cookie是什么？Cookie是服务器发送到浏览器并保存到本地的一块数据， 他会随下次向同一个服务器发送请求的时候被携带并发 送到服务器上， 服务器用来判断这两个请求是否来自同一个浏览器， 一般用于保存用户的登陆态。Cookie使无状 态的HTTP协议记录信息成为了可能， 大小为4kb。 Cookie的几个属性服务器设置setCookie响应头，res.setHeader(&quot;Set-C">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP Cookie">
+<meta property="og:url" content="http://fedev.me/cookie/index.html">
 <meta property="og:site_name" content="Hello maggie">
+<meta property="og:description" content="Cookie是什么？Cookie是服务器发送到浏览器并保存到本地的一块数据， 他会随下次向同一个服务器发送请求的时候被携带并发 送到服务器上， 服务器用来判断这两个请求是否来自同一个浏览器， 一般用于保存用户的登陆态。Cookie使无状 态的HTTP协议记录信息成为了可能， 大小为4kb。 Cookie的几个属性服务器设置setCookie响应头，res.setHeader(&quot;Set-C">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-06-28T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-06-29T12:15:28.348Z">
 <meta property="article:author" content="maggie">
+<meta property="article:tag" content="cookie">
 <meta name="twitter:card" content="summary">
   
   
@@ -63,40 +68,78 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
+        <section id="main"><article id="post-cookie" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+   
+  </div>
+  <div class="article-inner">
     
     
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/" class="archive-article-date">
-  <time datetime="2019-08-15T00:00:00.000Z" itemprop="datePublished">Aug 15</time>
-</a>
-      
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/%E5%B7%A5%E7%A8%8B%E5%8C%96%E4%B9%8B%E6%8C%81%E7%BB%AD%E6%9E%84%E5%BB%BA/">工程化之持续构建</a>
+    <h1 class="article-title" itemprop="name">
+      HTTP Cookie
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="Cookie是什么？"><a href="#Cookie是什么？" class="headerlink" title="Cookie是什么？"></a>Cookie是什么？</h3><p>Cookie是服务器发送到浏览器并保存到本地的一块数据， 他会随下次向同一个服务器发送请求的时候被携带并发</p>
+<p>送到服务器上， 服务器用来判断这两个请求是否来自同一个浏览器， 一般用于保存用户的登陆态。Cookie使无状</p>
+<p>态的HTTP协议记录信息成为了可能， 大小为4kb。</p>
+<h3 id="Cookie的几个属性"><a href="#Cookie的几个属性" class="headerlink" title="Cookie的几个属性"></a>Cookie的几个属性</h3><p>服务器设置setCookie响应头，<code>res.setHeader(&quot;Set-Cookie&quot;, &quot;userName= maggie&quot;)</code></p>
+<ol>
+<li><p>Expires 和 Max-Age</p>
+<p> 设置Cookie的过期时间,Expires是最长有效时间（UTC时间）, Max-Age是Cookie失效之前的秒数， 优先级比</p>
+<p> expires要高, 如果这两个属性都没有， 则代表这是一个会话期Cookie, 浏览器关闭之后就会删除.</p>
+</li>
+<li><p>HttpOnly 和 Secure</p>
+<p> HttpOnly设置不能通过JS(<code>document.cookie</code>)拿到Cookie, 可以有效防止跨站脚本攻击</p>
+<p> Secure只有当请求为HTTPS的时候才会被发送到服务器, http无法使用Secure标记.</p>
+</li>
+<li><p>Domain 和 Path</p>
+<p> 这两个属性定义了cookie被种到哪里去，domain指定了域名，如果在根域下设置， 那么其子域也会携带，反</p>
+<p> 过来不成立， 如果domain 不能涵盖当前服务器的域名, 则设置不成功，毕竟百度不能给淘宝种cookie.</p>
+<p> path指定了路径，如果path是/, 那么/a也会携带，反过来不成立.</p>
+</li>
+<li><p>SameSite</p>
+<p> 设置cookie不随跨站请求（跨站和跨域不一样, 跨域不一定跨站， 跨站一定跨域）一起发送， 适当的防止</p>
+<p> csrf(跨站请求伪造)，假设我已经登陆了支付宝，这时候我点了个链接，这个链接向支付宝发起了一个扣款请</p>
+<p> 求， 当SameSite是None的时候，会随着这次请求将cookie带过去，支付宝认为我已经登陆，我的钱就没了。</p>
+<p> 。chrome 56版本之前默认值是None, 之后改成Lax.</p>
+<p> axios默认设置跨域请求不携带cookie，如果想要携带cookie则要客户端设置<code>withCredential = true</code>,服务端</p>
+<p> 设置<code>Access-Control-Allow-Origin</code>不能为*， 并且设置<code>Access-Control-Allow-Credentials: true</code>。</p>
+<p> 如果SameSite = lax/strict 即使设置了也不会带cookie, 除非再手动将SameSite置为None.将SameSite设置成None的时候必须同时设置Secure, 否则无效。</p>
+</li>
+</ol>
 
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://fedev.me/cookie/" data-id="ckc0guxrt000d5znn5ucoc8rc" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cookie/" rel="tag">cookie</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/HTTP%E6%BC%94%E5%8F%98/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">HTTP 发展进程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         
