@@ -2,7 +2,7 @@
 title: HTTP1.1新增Host请求头的作用
 date: 2020-06-15
 categories: 
-- WEB前端
+- 计算机网络
 rank: 3
 tags: 
   - HTTP1.1
@@ -52,6 +52,6 @@ server {
 #### 关于[Host](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Host), [Origin](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Origin), [Referer](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Referer)
 Host是目标服务器的域名/IP地址 和 端口，HTTP1.1中必须携带Host头， 否则返回400(Bad Request) 
 
-Origin是当前客户端的host【跨域请求自动带上】
+Origin是当前客户端的host【简单请求自动带上】
 
-Referer是当前客户端的URL(host+路径信息,  用于图片防盗链)
+Referer是当前客户端的URL(host+路径信息,  一般用于图片防盗链)
